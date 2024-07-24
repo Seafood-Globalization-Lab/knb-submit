@@ -7,7 +7,7 @@ The Knowledge Network for Biocomplexity (KNB) is the data repository where the A
 
 **Note**: a user will need an [ORCiD](https://orcid.org/) to log into KNB.
 
-For additional resources on how to submit data to KNB see the link below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains the DataONE and KNB.
+For additional resources on how to submit data to KNB see the links below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains DataONE and KNB.
 
 - [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/)
 - [Data Team Reference Guide](https://nceas.github.io/datateam-training/reference/)
