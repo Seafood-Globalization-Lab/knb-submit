@@ -1,4 +1,6 @@
-# knb-submit
+# Submit stable ARTIS version to data repository
+
+
 Workflow to submit data, model code, and metadata to the [KNB repository](https://knb.ecoinformatics.org/).
 
 ## Resources
