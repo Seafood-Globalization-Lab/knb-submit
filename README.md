@@ -1,6 +1,8 @@
-# Submit stable ARTIS version to data repository
+# Submit ARTIS to data repository
 
-ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in maintaining an open-science and open-source model and dataset. KNB issues unique DOIs (digital object identifier) to each data package and every version of the package for consistent and reliable citations that assists reproducible analyses and approriate attribution.
+ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing the model and dataset to the larger open-science and reproducible science community. ARTIS uses KNB as an access point for anyone to download the [ARTIS model codebase and clean inputs](doi:10.5063/F1862DXT) and output [ARTIS database](doi:10.5063/F1CZ35N7)
+
+KNB is guided by FAIR (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access. 
 
 ## Resources
 
@@ -12,3 +14,5 @@ For additional resources on how to submit data to KNB see the links below from N
 
 - [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/)
 - [Data Team Reference Guide](https://nceas.github.io/datateam-training/reference/)
+
+Wilkinson, M., Dumontier, M., Aalbersberg, I. et al. The FAIR Guiding Principles for scientific data management and stewardship. Sci Data 3, 160018 (2016). [https://doi.org/10.1038/sdata.2016.18](https://doi.org/10.1038/sdata.2016.18)
