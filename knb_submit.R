@@ -38,12 +38,19 @@ consumption_files <- list.files(path = artis_outputs_dir, pattern = "consumption
 # Getting dataone package instance for upload
 pkg <- dataone::getDataPackage(knb, resource_map_pid)
 
-# metadata file associated with data file being uploaded
-metaObj <- new("DataObject", format="eml://ecoinformatics.org/eml-2.1.1", filename="qa/metadata/Aquatic_Resource_Trade_in_Species.xml")
+
+# get current metadata identifier
+metadataId <- selectMember(dp, name="sysmeta@formatId", value="https://eml.ecoinformatics.org/eml-2.2.0")
+
+# replace metadata file with a local edited version
+# dp <- replaceMember(dp, metadataId, replacement="qa/metadata/Aquatic_Resource_Trade_in_Species.xml")
+
 # data file (CSV) being uploaded
 sourceObj <- new("DataObject", format="text/csv", filename="qa/repo_data/zenodo_archive_database_20240422/snet_HS02_y2004.csv")
+
 # Adding new data file to data package
-pkg <- addMember(pkg, sourceObj, metaObj) # The third argument of addMember() associates the new DataObject to the metadata that was just added.
+pkg <- addMember(pkg, sourceObj, metaObj) # The third argument of addMember() associates the new DataObject to the metadata
+
 # Upload changes (new files) to package
 uploadDataPackage(knb, pkg, public = FALSE, accessRules=pkg@sysmeta@accessPolicy, quiet = FALSE)
 
