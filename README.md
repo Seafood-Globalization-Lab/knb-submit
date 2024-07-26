@@ -1,11 +1,10 @@
 # Submit stable ARTIS version to data repository
 
-
-Workflow to submit data, model code, and metadata to the [KNB repository](https://knb.ecoinformatics.org/).
+ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in maintaining an open-science and open-source model and dataset. KNB issues unique DOIs (digital object identifier) to each data package and every version of the package for consistent and reliable citations that assists reproducible analyses and approriate attribution.
 
 ## Resources
 
-The Knowledge Network for Biocomplexity (KNB) is the data repository where the ARTIS codebase and database is archived in a stable version. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories. KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages which can be created via the website GUI (graphical user interface) or through a series of R packages using the DataONE API. 
+KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories. KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages which can be created via the website GUI (graphical user interface) or through a series of R packages using the DataONE API. 
 
 **Note**: a user will need an [ORCiD](https://orcid.org/) to log into KNB.
 
