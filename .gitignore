@@ -50,3 +50,7 @@ rsconnect/
 
 # Folders to ignore
 outputs/*
+
+README_files/*
+
+*.html
