@@ -34,7 +34,7 @@ year_hs <- artis %>%
 
 # Loop through each year and version combination to write it out
 for(i in 1:nrow(year_hs)){
-  print(paste(i, year_hs$hs_version[i], year_hs$year[i], sep = " "))
+  print(paste(i, "of", nrow(year_hs), year_hs$hs_version[i], year_hs$year[i], sep = " "))
   
   artis_i <- artis %>%
     filter(hs_version == year_hs$hs_version[i], 
@@ -52,3 +52,17 @@ for(i in 1:nrow(year_hs)){
 consumption <- dbGetQuery(con, "SELECT * FROM consumption") %>%
   select(-record_id) 
 
+# Loop through each year and version combination to write it out
+for(i in 1:nrow(year_hs)){
+  print(paste(i, "of", nrow(year_hs), year_hs$hs_version[i], year_hs$year[i], sep = " "))
+  
+  consumption_i <- consumption %>%
+    filter(hs_version == year_hs$hs_version[i], 
+           year == year_hs$year[i])
+  
+  write.csv(consumption_i, file.path("outputs", "consumption", paste("consumption_midpoint_", 
+                                                         year_hs$hs_version[i], "_",
+                                                         year_hs$year[i], ".csv",
+                                                         sep = "")),
+            row.names = FALSE)
+}
