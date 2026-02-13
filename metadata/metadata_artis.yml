@@ -82,45 +82,6 @@ dataset:
         - directory: "https://ror.org" # for ROR (resesarch org)
           userId: "https://ror.org/00cvxb145"
 
-    - individualName:
-        givenName: "Rahul"   # First name(s)
-        surName: "Agrawal Bejarano"     # Last name (REQUIRED)
-      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
-      organizationName: "American University"  # OPTIONAL
-      positionName: "Data Scientist"      # OPTIONAL - Job title
-      electronicMailAddress: "rahul.agrawal.b@gmail.com"  # OPTIONAL (repeatable)
-      userId:               # OPTIONAL - ORCID or other identifier
-        - directory: "https://orcid.org"  # For ORCID
-          userId: "https://orcid.org/0000-0002-3944-4149"          # e.g., "0000-0002-1234-5678"
-        - directory: "https://ror.org" # for ROR (resesarch org)
-          userId: "https://ror.org/052w4zt36"
-
-    - individualName:
-        givenName: "Kelvin"   # First name(s)
-        surName: "Gorospe"     # Last name (REQUIRED)
-      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
-      organizationName: "American University"  # OPTIONAL
-      positionName: "Data Scientist"      # OPTIONAL - Job title
-      userId:               # OPTIONAL - ORCID or other identifier
-        - directory: "https://orcid.org"  # For ORCID
-          userId: "https://orcid.org/0000-0001-5498-8171"          # e.g., "0000-0002-1234-5678"
-        - directory: "https://ror.org" # for ROR (resesarch org)
-          userId: "https://ror.org/052w4zt36"
-  
-  # Metadata provider (OPTIONAL, repeatable) - who created this metadata
-  metadataProvider:
-    - individualName:
-        givenName: "Althea"
-        surName: "Marks"
-      organizationName: "University of Washington"
-      positionName: "Data Scientist" 
-      electronicMailAddress: "amarks1@uw.edu"
-      userId:               # OPTIONAL - ORCID or other identifier
-        - directory: "https://orcid.org"  # For ORCID
-          userId: "https://orcid.org/0000-0002-9370-9128"          # e.g., "0000-0002-1234-5678"
-        - directory: "https://ror.org" # for ROR (resesarch org)
-          userId: "https://ror.org/00cvxb145"
-          
   # OPTIONAL Publication date 
   pubDate: "2026"  # Format: YYYY-MM-DD or YYYY
 
@@ -266,9 +227,9 @@ dataset:
         oldValue: "v1.0"
         changeDate: "2024-01-15"
         comment: "This release builds on significant updates the calculation of the ARTIS 
-         consumption table; particularly for fishmeal-priority species, and adds viability 
-         to multi-step trade flows. Major logic changes in calculate_consumption() refine 
-         how domestic and foreign consumption are calculated, per-capita limits are applied, 
+         consumption table; particularly for fishmeal-priority species. Major logic changes 
+         in calculate_consumption() refine how domestic and foreign consumption are calculated, 
+         per-capita limits are applied, 
          and fishmeal allocations are made. Specific to v1.2.0 - fishmeal species preference 
          was assigned using industry reports and grey literature. 
          https://github.com/Seafood-Globalization-Lab/artis-model/releases/tag/v1.2.0"
@@ -383,7 +344,7 @@ dataset:
     - individualName:
         givenName: "Althea"   # First name(s)
         surName: "Marks"     # Last name (REQUIRED)
-      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      role: "custodianSteward"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
       organizationName: "University of Washington"  # OPTIONAL
       positionName: "Data Scientist"      # OPTIONAL - Job title
       address:              # OPTIONAL
@@ -400,31 +361,6 @@ dataset:
         - directory: "https://ror.org" # for ROR (resesarch org)
           userId: "https://ror.org/00cvxb145"
 
-    - individualName:
-        givenName: "Rahul"   # First name(s)
-        surName: "Agrawal Bejarano"     # Last name (REQUIRED)
-      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
-      organizationName: "American University"  # OPTIONAL
-      positionName: "Data Scientist"      # OPTIONAL - Job title
-      electronicMailAddress: "rahul.agrawal.b@gmail.com"  # OPTIONAL (repeatable)
-      userId:               # OPTIONAL - ORCID or other identifier
-        - directory: "https://orcid.org"  # For ORCID
-          userId: "https://orcid.org/0000-0002-3944-4149"          # e.g., "0000-0002-1234-5678"
-        - directory: "https://ror.org" # for ROR (resesarch org)
-          userId: "https://ror.org/052w4zt36"
-
-    - individualName:
-        givenName: "Kelvin"   # First name(s)
-        surName: "Gorospe"     # Last name (REQUIRED)
-      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
-      organizationName: "American University"  # OPTIONAL
-      positionName: "Data Scientist"      # OPTIONAL - Job title
-      userId:               # OPTIONAL - ORCID or other identifier
-        - directory: "https://orcid.org"  # For ORCID
-          userId: "https://orcid.org/0000-0001-5498-8171"          # e.g., "0000-0002-1234-5678"
-        - directory: "https://ror.org" # for ROR (resesarch org)
-          userId: "https://ror.org/052w4zt36"
-    
     # Abstract (OPTIONAL)
   abstract:
       para: ""
