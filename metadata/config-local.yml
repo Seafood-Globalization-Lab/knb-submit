@@ -1,0 +1,27 @@
+# Model parameters that change between runs
+model:
+  version: "2.0"
+  prod_type: "FAO"  # or "SAU"
+  run_date: !expr Sys.Date()
+
+# Data paths (relative to project root)
+paths:
+  data_base: "./data"
+  baci_version: "202501"
+
+# Model behavior
+settings:
+  running_sau: false
+  need_new_fb_slb: false
+  test: false
+  test_years: []
+  estimate_data_type: "midpoint"
+  dev_mode: false
+  max_year: 2023
+
+# Python environment
+python:
+  venv_path: "venv"
+
+# HS version configuration
+hs_versions: ["96", "02", "07", "12", "17"]

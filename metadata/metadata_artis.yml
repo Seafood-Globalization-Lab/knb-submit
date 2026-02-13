@@ -1,0 +1,588 @@
+# EML 2.2.0 Full Metadata Template
+# Comprehensive YAML template for creating Ecological Metadata Language documents
+# Based on EML 2.2.0 schema: https://github.com/NCEAS/eml/tree/main/xsd
+# 
+# Usage: Fill in relevant sections for your dataset
+# Note: Many fields are OPTIONAL - only complete what's applicable
+# Fields marked (repeatable) can have multiple entries as list items
+
+# ============================================================================
+# ROOT ELEMENT
+# ============================================================================
+
+packageId: ""  # REQUIRED - Unique identifier for this metadata document (e.g., "doi:10.18739/A2XXXX" or "urn:uuid:...")
+system: ""     # REQUIRED - System that generated the packageId (e.g., "uuid", "doi", "knb")
+scope: "system"  # REQUIRED - Default is "system"
+
+# ============================================================================
+# DATASET - Core metadata about the dataset
+# ============================================================================
+
+dataset:
+  
+  # --------------------------------------------------------------------------
+  # Basic Dataset Information (res:ResourceGroup)
+  # --------------------------------------------------------------------------
+  
+  # REQUIRED - Descriptive title of the dataset
+  title: "Aquatic Resource Trade in Species (ARTIS) 1.2 FAO" 
+  
+  # OPTIONAL Short name or acronym 
+  shortName: "ARTIS"
+  
+  # # (OPTIONAL, repeatable) Alternate identifiers - such as from a different management system 
+  # alternateIdentifier:
+  #   - identifier: ""
+  #     system: ""  # System that assigned this identifier
+
+  # --------------------------------------------------------------------------
+  # People and Organizations (REQUIRED - at least one creator and contact)
+  # --------------------------------------------------------------------------
+  
+# Dataset creators (REQUIRED, repeatable)
+  creator:
+    - individualName:
+        givenName: "Jessica"   # First name(s)
+        surName: "Gephart"     # Last name (REQUIRED)
+      role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "University of Washington"  # OPTIONAL
+      positionName: "Assistant Professor"      # OPTIONAL - Job title
+      address:              # OPTIONAL
+        deliveryPoint: "1122 NE Boat St"   # Street address
+        city: "Seattle"
+        administrativeArea: "Washington"  # State/Province
+        postalCode: "98195"
+        country: "United State of America"
+      phone: ""             # OPTIONAL (repeatable)
+      electronicMailAddress: "gephart@uw.edu"  # OPTIONAL (repeatable)
+      onlineUrl: "https://seafood-globalization-lab.weebly.com/"         # OPTIONAL - Personal website
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0001-6836-9291"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/00cvxb145"
+
+  creator:
+    - individualName:
+        givenName: "Althea"   # First name(s)
+        surName: "Marks"     # Last name (REQUIRED)
+      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "University of Washington"  # OPTIONAL
+      positionName: "Data Scientist"      # OPTIONAL - Job title
+      address:              # OPTIONAL
+        deliveryPoint: "1122 NE Boat St"   # Street address
+        city: "Seattle"
+        administrativeArea: "Washington"  # State/Province
+        postalCode: "98195"
+        country: "United State of America"
+      phone: ""             # OPTIONAL (repeatable)
+      electronicMailAddress: "amarks1@uw.edu"  # OPTIONAL (repeatable)
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0002-9370-9128"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/00cvxb145"
+
+    - individualName:
+        givenName: "Rahul"   # First name(s)
+        surName: "Agrawal Bejarano"     # Last name (REQUIRED)
+      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "American University"  # OPTIONAL
+      positionName: "Data Scientist"      # OPTIONAL - Job title
+      electronicMailAddress: "rahul.agrawal.b@gmail.com"  # OPTIONAL (repeatable)
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0002-3944-4149"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/052w4zt36"
+
+    - individualName:
+        givenName: "Kelvin"   # First name(s)
+        surName: "Gorospe"     # Last name (REQUIRED)
+      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "American University"  # OPTIONAL
+      positionName: "Data Scientist"      # OPTIONAL - Job title
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0001-5498-8171"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/052w4zt36"
+  
+  # Metadata provider (OPTIONAL, repeatable) - who created this metadata
+  metadataProvider:
+    - individualName:
+        givenName: "Althea"
+        surName: "Marks"
+      organizationName: "University of Washington"
+      positionName: "Data Scientist" 
+      electronicMailAddress: "amarks1@uw.edu"
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0002-9370-9128"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/00cvxb145"
+          
+  # OPTIONAL Publication date 
+  pubDate: "2026"  # Format: YYYY-MM-DD or YYYY
+
+  # OPTIONAL - The language in which the resource is written. This can be a well-known language name, or one of the ISO 639 language codes to be more precise.
+  language: "en"
+
+  # REQUIRED - A brief overview of the resource - Use para OR markdown
+  abstract:
+    para: "Food systems have become increasingly globalized, with over a quarter of all food now traded
+     internationally. Seafood is among the most highly traded foods and it is becoming increasingly 
+     globalized, with trade doubling in recent decades. At the same time, seafood is now widely recognized 
+     as a critical source of nutrition. Thus, social and environmental threats to local seafood production, 
+     including environmental extremes, price impacts of market integration, networked risks, and increased 
+     availability of processed foods, must be evaluated in the context of global trade. These issues are 
+     paralleled by similar questions for other natural resources and are central to global food systems 
+     research. However, our collective understanding of the environmental and human outcomes of food 
+     system globalization is limited by a fundamental gap between production and trade data. We bridge 
+     this gap in the Aquatic Resource Trade in Species (ARTIS) database by providing the first global 
+     estimates of seafood species and nutrient trade flows from 1996–2020." 
+
+  # OPTIONAL, repeatable , highly suggested
+  keywordSet:
+    - keyword:
+        - "Seafood"  # Individual keywords
+        - "Aquatic food"
+        - "Trade"
+        - "Globalization"
+        - "Supply Chain"
+        - "Traceability"
+      #keywordThesaurus: ""  # Name of thesaurus/vocabulary (e.g., "LTER Controlled Vocabulary")
+
+  # OPTIONAL - This field provides any information that is not characterized by the other resource metadata fields.
+  # additionalInfo:
+  #   para: ""
+  
+  # Intellectual property rights regarding usage and licensing of this resource.
+  # intellectualRights:
+  #   para: ""  # License text (e.g., Copyright 2001 Regents of the University of California Santa Barbara. Free for use by all individuals provided that the owners are acknowledged in any use or publication.)
+
+  licensed:
+    licenseName: "Creative Commons Attribution 4.0 International"
+    url: "https://spdx.org/licenses/CC-BY-4.0.html"
+    identifier: "CC-BY-4.0"
+
+  # --------------------------------------------------------------------------
+  # Coverage - Spatial, Temporal, and Taxonomic
+  # --------------------------------------------------------------------------
+  
+  coverage:
+    
+    # Geographic coverage (OPTIONAL, repeatable)
+    geographicCoverage:
+      - geographicDescription: ""  # Text description of area
+        boundingCoordinates:
+          westBoundingCoordinate: -180   # Decimal degrees, -180 to 180
+          eastBoundingCoordinate: 180   # Decimal degrees, -180 to 180
+          northBoundingCoordinate: 90  # Decimal degrees, -90 to 90
+          southBoundingCoordinate: -90  # Decimal degrees, -90 to 90
+    
+    # Temporal coverage (OPTIONAL, repeatable)
+    temporalCoverage:
+      - rangeOfDates:
+          beginDate:
+            calendarDate: "1996"  # Format: YYYY-MM-DD
+          endDate:
+            calendarDate: "2020"  # Format: YYYY-MM-DD
+      # OR for single date:
+      # - singleDateTime:
+      #     calendarDate: ""
+    
+    # Taxonomic coverage (OPTIONAL, repeatable)
+    taxonomicCoverage:
+      # A description of the range of taxa addressed 
+      # in the data set or collection. Example "All vascular plants were identified to 
+      # family or species, mosses and lichens were identified as moss or lichen."
+      - generalTaxonomicCoverage: "2000+ farmed and wild capture aquatic species which in 
+          turn were matched to 900+ traded seafood product descriptions. Though we include 
+          nonfood (e.g., fish meal, bait, and ornamental trade) production and trade in the 
+          database, we exclude this from the analysis of aquatic food production and consumption. 
+          We also exclude mammals, reptiles, fowl, or seaweeds, along with co-products 
+          (e.g., caviar, shark fins, and fish meat) to avoid double counting, from the model 
+          and resulting database."  
+        taxonomicClassification:
+          - taxonRankName: "Kingdom"
+            taxonRankValue: "Animalia"
+            # taxonomicClassification:
+            #   - taxonRankName: "Phylum"
+            #     taxonRankValue: ""
+            #     taxonomicClassification:
+            #       - taxonRankName: "Class"
+            #         taxonRankValue: ""
+            #         taxonomicClassification:
+            #           - taxonRankName: "Order"
+            #             taxonRankValue: ""
+            #             taxonomicClassification:
+            #               - taxonRankName: "Family"
+            #                 taxonRankValue: ""
+            #                 taxonomicClassification:
+            #                   - taxonRankName: "Genus"
+            #                     taxonRankValue: ""
+            #                     taxonomicClassification:
+            #                       - taxonRankName: "Species"
+            #                         taxonRankValue: ""  # Scientific name
+            #                         commonName: ""      # OPTIONAL
+  
+  # --------------------------------------------------------------------------
+  # Human Readable Context 
+  # --------------------------------------------------------------------------
+
+  # OPTIONAL Purpose - A synopsis of the purpose of this dataset.  It may include one or 
+              # more paragraphs as well as inline links to table(s) and figure(s) 
+              # that summarize the data included in the data paper, including a 
+              # summary of key findings if appropriate. Note that this element 
+              # requires DocBook style formatting.  See eml-text for more information.
+  purpose: 
+    - para: ""
+
+  # OPTIONAL - One to many paragraphs that provide background and context for the 
+  # dataset with appropriate figures and references. 
+  introduction:
+    - para: ""
+
+  # OPTIONAL - A high level overview of interpretation, structure, and content of the dataset.
+  gettingStarted:
+    - para: ""
+
+  # OPTIONAL - One or more sentences that acknowledge funders
+  # and other key contributors to the study (excluding the
+  # dataset authors listed in the creator field). Note that
+  # funding awards are also listed by award number in the
+  #eml-project award element,
+  acknowledgements:
+    - para:
+
+  # OPTIONAL - Maintenance and update information
+  maintenance:
+    description:
+      para:
+        - "This dataset is updated annually with new trade year data."
+    maintenanceUpdateFrequency: "annually"  # annually, asNeeded, continually, daily, irregular, monthly, notPlanned, weekly, etc.
+    changeHistory:  # OPTIONAL (repeatable) - record of changes
+      - changeScope: "dataset"
+        oldValue: "v1.0"
+        changeDate: "2024-01-15"
+        comment: "This release builds on significant updates the calculation of the ARTIS 
+         consumption table; particularly for fishmeal-priority species, and adds viability 
+         to multi-step trade flows. Major logic changes in calculate_consumption() refine 
+         how domestic and foreign consumption are calculated, per-capita limits are applied, 
+         and fishmeal allocations are made. Specific to v1.2.0 - fishmeal species preference 
+         was assigned using industry reports and grey literature. 
+         https://github.com/Seafood-Globalization-Lab/artis-model/releases/tag/v1.2.0"
+
+  # Contact information (REQUIRED, repeatable)
+  contact:
+    - individualName:
+        givenName: "Jessica"   # First name(s)
+        surName: "Gephart"     # Last name (REQUIRED)
+      role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "University of Washington"  # OPTIONAL
+      positionName: "Assistant Professor"      # OPTIONAL - Job title
+      address:              # OPTIONAL
+        deliveryPoint: "1122 NE Boat St"   # Street address
+        city: "Seattle"
+        administrativeArea: "Washington"  # State/Province
+        postalCode: "98195"
+        country: "United State of America"
+      phone: ""             # OPTIONAL (repeatable)
+      electronicMailAddress: "gephart@uw.edu"  # OPTIONAL (repeatable)
+      onlineUrl: "https://seafood-globalization-lab.weebly.com/"         # OPTIONAL - Personal website
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0001-6836-9291"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/00cvxb145"
+
+  # # OPTIONAL
+  # publisher:
+  #   organizationName: ""  # REQUIRED
+  #   address:
+  #     deliveryPoint: ""
+  #     city: ""
+  #     administrativeArea: ""
+  #     postalCode: ""
+  #     country: ""
+  #   electronicMailAddress: ""
+  #   onlineUrl: ""
+
+  # --------------------------------------------------------------------------
+  # Methods - How data was collected/processed
+  # --------------------------------------------------------------------------
+
+  methods:
+    
+    # Method steps (OPTIONAL, repeatable)
+    methodStep:
+      - description:
+          para: "Please see https://seafood-globalization-lab.github.io/artis-manual/artis-our-model/"  # Detailed description of this step
+        # instrumentation: ""  # OPTIONAL - Equipment used
+        # dataSource:  # OPTIONAL - If this step used external data
+        #   title: ""
+        #   creator:
+        #     individualName:
+        #       surName: ""
+        #   distribution:
+        #     online:
+        #       url: ""
+    
+    # Sampling description (OPTIONAL)
+    # sampling:
+    #   studyExtent:
+    #     description:
+    #       para: ""  # Overall study area and duration
+    #   samplingDescription:
+    #     para: ""  # How samples were collected
+      # spatialSamplingUnits:  # OPTIONAL
+      #   coverage:
+      #     geographicCoverage:
+      #       geographicDescription: ""
+      #       boundingCoordinates:
+      #         westBoundingCoordinate: 0.0
+      #         eastBoundingCoordinate: 0.0
+      #         northBoundingCoordinate: 0.0
+      #         southBoundingCoordinate: 0.0
+    
+    # Quality control procedures (OPTIONAL)
+    qualityControl:
+      - description:
+          para: "value checks emedded in the model code and post-processing assumption validation reports"
+  
+  # --------------------------------------------------------------------------
+  # Project - Research project details
+  # --------------------------------------------------------------------------
+  
+  project:
+    title: "Aquatic Resource Trade in Species (ARTIS)"  # REQUIRED - Project name
+    
+    # Project personnel (OPTIONAL, repeatable)
+    personnel:
+    - individualName:
+        givenName: "Jessica"   # First name(s)
+        surName: "Gephart"     # Last name (REQUIRED)
+      role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "University of Washington"  # OPTIONAL
+      positionName: "Assistant Professor"      # OPTIONAL - Job title
+      address:              # OPTIONAL
+        deliveryPoint: "1122 NE Boat St"   # Street address
+        city: "Seattle"
+        administrativeArea: "Washington"  # State/Province
+        postalCode: "98195"
+        country: "United State of America"
+      phone: ""             # OPTIONAL (repeatable)
+      electronicMailAddress: "gephart@uw.edu"  # OPTIONAL (repeatable)
+      onlineUrl: "https://seafood-globalization-lab.weebly.com/"         # OPTIONAL - Personal website
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0001-6836-9291"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/00cvxb145"
+
+    - individualName:
+        givenName: "Althea"   # First name(s)
+        surName: "Marks"     # Last name (REQUIRED)
+      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "University of Washington"  # OPTIONAL
+      positionName: "Data Scientist"      # OPTIONAL - Job title
+      address:              # OPTIONAL
+        deliveryPoint: "1122 NE Boat St"   # Street address
+        city: "Seattle"
+        administrativeArea: "Washington"  # State/Province
+        postalCode: "98195"
+        country: "United State of America"
+      phone: ""             # OPTIONAL (repeatable)
+      electronicMailAddress: "amarks1@uw.edu"  # OPTIONAL (repeatable)
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0002-9370-9128"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/00cvxb145"
+
+    - individualName:
+        givenName: "Rahul"   # First name(s)
+        surName: "Agrawal Bejarano"     # Last name (REQUIRED)
+      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "American University"  # OPTIONAL
+      positionName: "Data Scientist"      # OPTIONAL - Job title
+      electronicMailAddress: "rahul.agrawal.b@gmail.com"  # OPTIONAL (repeatable)
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0002-3944-4149"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/052w4zt36"
+
+    - individualName:
+        givenName: "Kelvin"   # First name(s)
+        surName: "Gorospe"     # Last name (REQUIRED)
+      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: "American University"  # OPTIONAL
+      positionName: "Data Scientist"      # OPTIONAL - Job title
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: "https://orcid.org/0000-0001-5498-8171"          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: "https://ror.org/052w4zt36"
+    
+    # Abstract (OPTIONAL)
+  abstract:
+      para: ""
+    
+    # 
+    # OPTIONAL, repeatable The award field is used to provide specific information about the funding awards for a project in a structured format. 
+  award:
+      # The name of the funding institution, with fully expanded acronyms
+      # to show the full, official name of the funding agency. In general, this should match
+      # the official name of the funder as listed in an Authority such as the Open
+      # Funder Registry.
+      funderName: "National Science Foundation"
+      funderIdentifier: "https://ror.org/021nxhr62 or https://ror.org/03h7mcc28"
+      awardNumber: "HNDS-I #2121238 OR 2504715"
+      title: "Collaborative Research: HNDS-I: A global seafood trade network database for sustainable food systems, human health, and nutrition security"
+      awardUrl: "https://www.nsf.gov/funding/opportunities/hnds-human-networks-data-science"
+    
+    # additional optional fields to describe project - https://eml.ecoinformatics.org/schema/eml-dataset_xsd#DatasetType
+  
+  # --------------------------------------------------------------------------
+  # Data Tables and Other Entities
+  # --------------------------------------------------------------------------
+  
+  # Data tables (OPTIONAL, repeatable)
+  dataTable:
+    - entityName: ""  # REQUIRED - File name (e.g., "artis_trade_data.csv")
+      entityDescription: ""  # REQUIRED - What this table contains
+      physical:
+        objectName: ""  # REQUIRED - File name
+        size:
+          unit: "byte"  # REQUIRED
+          size: 0       # REQUIRED - File size in bytes
+        dataFormat:
+          textFormat:
+            numHeaderLines: 1  # Number of header rows
+            recordDelimiter: "\n"  # Line ending
+            attributeOrientation: "column"  # Usually "column"
+            simpleDelimited:
+              fieldDelimiter: ","  # e.g., "," for CSV, "\t" for TSV
+        # distribution: # Does KNB do this?
+        #   online:
+        #     url: ""  # REQUIRED - Download URL
+        #     # onlineDescription: ""  # OPTIONAL
+      
+      # Attribute (column) definitions (REQUIRED)
+      attributeList:
+        attribute:
+          # Example: Text/categorical attribute
+          - attributeName: ""  # REQUIRED - Column name (exact match)
+            attributeDefinition: ""  # REQUIRED - What this column represents
+            storageType: "string"  # OPTIONAL - Data type in file
+            measurementScale:
+              nominal:  # For categorical/text data
+                nonNumericDomain:
+                  textDomain:
+                    definition: ""  # Description of valid values
+                  # OR for enumerated domains:
+                  # enumeratedDomain:
+                  #   codeDefinition:
+                  #     - code: ""
+                  #       definition: ""
+          
+          # Example: Numeric attribute
+          - attributeName: ""
+            attributeDefinition: ""
+            storageType: "float"
+            measurementScale:
+              ratio:  # For numeric data with meaningful zero (use "interval" if no true zero)
+                unit:
+                  standardUnit: ""  # e.g., "kilogram", "meter", "dimensionless"
+                  # OR customUnit: ""  # If not in standard list
+                numericDomain:
+                  numberType: "real"  # "real", "integer", or "natural"
+                  # bounds:  # OPTIONAL - valid range
+                  #   minimum: 0.0
+                  #   maximum: 100.0
+          
+          # Example: Date/time attribute
+          - attributeName: ""
+            attributeDefinition: ""
+            storageType: "date"
+            measurementScale:
+              dateTime:
+                formatString: "YYYY-MM-DD"  # Date format (e.g., "YYYY-MM-DD", "YYYY")
+                dateTimePrecision: 1  # OPTIONAL
+                dateTimeDomain:
+                  bounds:  # OPTIONAL
+                    minimum: "1996-01-01"
+                    maximum: "2023-12-31"
+          
+          # Missing value codes (OPTIONAL, applies to any attribute)
+          # missingValueCode:
+          #   - code: "NA"
+          #     codeExplanation: "Not available"
+          #   - code: "-999"
+          #     codeExplanation: "Missing data"
+      
+      # Number of records (OPTIONAL)
+      numberOfRecords: 0
+      
+      # Constraints (OPTIONAL)
+      # constraint:
+      #   primaryKey:
+      #     - constraintName: ""
+      #       key:
+      #         attributeReference: ""  # Column name(s) for primary key
+  
+  # Other entities (OPTIONAL, repeatable) - for non-tabular files
+  otherEntity:
+    - entityName: ""  # REQUIRED - File name
+      entityDescription: ""  # REQUIRED
+      entityType: ""  # REQUIRED - e.g., "image", "document", "archive", "code"
+      physical:
+        objectName: ""
+        size:
+          unit: "byte"
+          size: 0
+        dataFormat:
+          externallyDefinedFormat:
+            formatName: ""  # e.g., "PNG", "PDF", "ZIP"
+        distribution:
+          online:
+            url: ""
+  
+# ============================================================================
+# Literature Cited (OPTIONAL)
+# ============================================================================
+    
+    # OPTIONAL - How users should cite this dataset
+  # usageCitation:
+  #   - bibtex: |
+  #       @dataset{artis2025,
+  #         author = {Gephart, Jessica A. and others},
+  #         title = {ARTIS Global Seafood Trade Database v2.0},
+  #         year = {2025},
+  #         publisher = {Arctic Data Center},
+  #         doi = {10.18739/A2XXXXXXX}
+  #       }
+  
+  # OPTIONAL - Citations for literature referenced in the metadata
+  # literatureCited:
+  #   - bibtex: |
+  #       @article{gephart2017,
+  #         author = {Gephart, Jessica A. and Pace, Michael L.},
+  #         title = {Structure and evolution of the global seafood trade network},
+  #         journal = {Environmental Research Letters},
+  #         year = {2017},
+  #         volume = {12},
+  #         number = {3},
+  #         pages = {034004},
+  #         doi = {10.1088/1748-9326/aa5a72}
+  #       }
+  #   - bibtex: |
+  #       @article{author2020,
+  #         author = {Author, Name},
+  #         title = {Another relevant publication},
+  #         journal = {Journal Name},
+  #         year = {2020},
+  #         doi = {10.xxxx/xxxxx}
+  #       }

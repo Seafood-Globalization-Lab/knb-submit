@@ -1,0 +1,459 @@
+# EML 2.2.0 Full Metadata Template
+# Comprehensive YAML template for creating Ecological Metadata Language documents
+# Based on EML 2.2.0 schema: https://github.com/NCEAS/eml/tree/main/xsd
+# 
+# Usage: Fill in relevant sections for your dataset
+# Note: Many fields are OPTIONAL - only complete what's applicable
+# Fields marked (repeatable) can have multiple entries as list items
+
+# ============================================================================
+# ROOT ELEMENT
+# ============================================================================
+
+packageId: ""  # REQUIRED - Unique identifier for this metadata document (e.g., "doi:10.18739/A2XXXX" or "urn:uuid:...")
+system: ""     # REQUIRED - System that generated the packageId (e.g., "uuid", "doi", "knb")
+scope: "system"  # REQUIRED - Default is "system"
+
+# ============================================================================
+# DATASET - Core metadata about the dataset
+# ============================================================================
+
+dataset:
+  
+  # --------------------------------------------------------------------------
+  # Basic Dataset Information (res:ResourceGroup)
+  # --------------------------------------------------------------------------
+  
+  # REQUIRED - Descriptive title of the dataset
+  title: ""  
+  
+  # OPTIONAL Short name or acronym 
+  shortName: ""
+  
+  # # (OPTIONAL, repeatable) Alternate identifiers - such as from a different management system 
+  # alternateIdentifier:
+  #   - identifier: ""
+  #     system: ""  # System that assigned this identifier
+
+  # --------------------------------------------------------------------------
+  # People and Organizations (REQUIRED - at least one creator and contact)
+  # --------------------------------------------------------------------------
+  
+  # Dataset creators (REQUIRED, repeatable)
+  creator:
+    - individualName:
+        givenName: ""   # First name(s)
+        surName: ""     # Last name (REQUIRED)
+      role: ""          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      organizationName: ""  # OPTIONAL
+      positionName: ""      # OPTIONAL - Job title
+      address:              # OPTIONAL
+        deliveryPoint: ""   # Street address
+        city: ""
+        administrativeArea: ""  # State/Province
+        postalCode: ""
+        country: ""
+      phone: ""             # OPTIONAL (repeatable)
+      electronicMailAddress: ""  # OPTIONAL (repeatable)
+      onlineUrl: ""         # OPTIONAL - Personal website
+      userId:               # OPTIONAL - ORCID or other identifier
+        - directory: "https://orcid.org"  # For ORCID
+          userId: ""          # e.g., "0000-0002-1234-5678"
+        - directory: "https://ror.org" # for ROR (resesarch org)
+          userId: ""
+  
+  # OPTIONAL, repeatable - who created this metadata
+  metadataProvider:
+    - individualName:
+        givenName: ""
+        surName: ""
+      organizationName: ""
+      electronicMailAddress: ""
+  
+  # OPTIONAL, repeatable - contributors with roles
+  associatedParty:
+    - individualName:
+        givenName: ""
+        surName: ""
+      organizationName: ""
+      electronicMailAddress: ""
+      role: ""  # REQUIRED - e.g., "principalInvestigator", "custodianSteward", "contributor", "author"
+
+  # OPTIONAL Publication date 
+  pubDate: ""  # Format: YYYY-MM-DD or YYYY
+
+  # OPTIONAL - The language in which the resource is written. This can be a well-known language name, or one of the ISO 639 language codes to be more precise.
+  language: "en"
+
+  # REQUIRED - A brief overview of the resource - Use para OR markdown
+  abstract:
+    para: ""  # Can have multiple paragraphs as list items
+#    markdown: "" # markdown summary: A block of text formatted with markdown directives
+
+  # OPTIONAL, repeatable , highly suggested
+  keywordSet:
+    - keyword:
+        - ""  # Individual keywords
+      keywordThesaurus: ""  # Name of thesaurus/vocabulary (e.g., "LTER Controlled Vocabulary")
+  
+
+  # OPTIONAL - This field provides any information that is not characterized by the other resource metadata fields.
+  # additionalInfo:
+  #   para: ""
+  
+  # Intellectual property rights regarding usage and licensing of this resource.
+  intellectualRights:
+    para: ""  # License text (e.g., Copyright 2001 Regents of the University of California Santa Barbara. Free for use by all individuals provided that the owners are acknowledged in any use or publication.)
+
+  licensed:
+    licenseName: "" # "Apache License 2.0"
+    url: "" #"https://spdx.org/licenses/Apache-2.0.html"
+    identifier: # drawn from SPDX license vocabulary
+
+  # --------------------------------------------------------------------------
+  # Coverage - Spatial, Temporal, and Taxonomic
+  # --------------------------------------------------------------------------
+  
+  coverage:
+    
+    # Geographic coverage (OPTIONAL, repeatable)
+    geographicCoverage:
+      - geographicDescription: ""  # Text description of area
+        boundingCoordinates:
+          westBoundingCoordinate: 0.0   # Decimal degrees, -180 to 180
+          eastBoundingCoordinate: 0.0   # Decimal degrees, -180 to 180
+          northBoundingCoordinate: 0.0  # Decimal degrees, -90 to 90
+          southBoundingCoordinate: 0.0  # Decimal degrees, -90 to 90
+    
+    # Temporal coverage (OPTIONAL, repeatable)
+    temporalCoverage:
+      - rangeOfDates:
+          beginDate:
+            calendarDate: ""  # Format: YYYY-MM-DD
+          endDate:
+            calendarDate: ""  # Format: YYYY-MM-DD
+      # OR for single date:
+      # - singleDateTime:
+      #     calendarDate: ""
+    
+    # Taxonomic coverage (OPTIONAL, repeatable)
+    taxonomicCoverage:
+      # A description of the range of taxa addressed 
+      # in the data set or collection. Example "All vascular plants were identified to 
+      # family or species, mosses and lichens were identified as moss or lichen."
+      - generalTaxonomicCoverage: ""  
+        taxonomicClassification:
+          - taxonRankName: "Kingdom"
+            taxonRankValue: ""
+            taxonomicClassification:
+              - taxonRankName: "Phylum"
+                taxonRankValue: ""
+                taxonomicClassification:
+                  - taxonRankName: "Class"
+                    taxonRankValue: ""
+                    taxonomicClassification:
+                      - taxonRankName: "Order"
+                        taxonRankValue: ""
+                        taxonomicClassification:
+                          - taxonRankName: "Family"
+                            taxonRankValue: ""
+                            taxonomicClassification:
+                              - taxonRankName: "Genus"
+                                taxonRankValue: ""
+                                taxonomicClassification:
+                                  - taxonRankName: "Species"
+                                    taxonRankValue: ""  # Scientific name
+                                    commonName: ""      # OPTIONAL
+  
+  # --------------------------------------------------------------------------
+  # Human Readable Context 
+  # --------------------------------------------------------------------------
+
+  # OPTIONAL Purpose - A synopsis of the purpose of this dataset.  It may include one or 
+              # more paragraphs as well as inline links to table(s) and figure(s) 
+              # that summarize the data included in the data paper, including a 
+              # summary of key findings if appropriate. Note that this element 
+              # requires DocBook style formatting.  See eml-text for more information.
+  purpose: 
+    - para: ""
+
+  # OPTIONAL - One to many paragraphs that provide background and context for the 
+  # dataset with appropriate figures and references. 
+  introduction:
+    - para: ""
+
+  # OPTIONAL - A high level overview of interpretation, structure, and content of the dataset.
+  gettingStarted:
+    - para: ""
+
+  # OPTIONAL - One or more sentences that acknowledge funders
+  # and other key contributors to the study (excluding the
+  # dataset authors listed in the creator field). Note that
+  # funding awards are also listed by award number in the
+  #eml-project award element,
+  acknowledgements:
+    - para:
+
+  # OPTIONAL - Maintenance and update information
+  maintenance:
+    description:
+      para:
+        - "This dataset is updated annually with new trade year data."
+    maintenanceUpdateFrequency: "annually"  # annually, asNeeded, continually, daily, irregular, monthly, notPlanned, weekly, etc.
+    changeHistory:  # OPTIONAL (repeatable) - record of changes
+      - changeScope: "dataset"
+        oldValue: "v1.0"
+        changeDate: "2024-01-15"
+        comment: "Initial public release"
+
+  # Contact information (REQUIRED, repeatable)
+  contact:
+    - individualName:
+        givenName: ""
+        surName: ""
+      organizationName: ""
+      positionName: ""
+      address:
+        deliveryPoint: ""
+        city: ""
+        administrativeArea: ""
+        postalCode: ""
+        country: ""
+      phone: ""
+      electronicMailAddress: ""  # REQUIRED
+      onlineUrl: ""
+
+  # # OPTIONAL
+  # publisher:
+  #   organizationName: ""  # REQUIRED
+  #   address:
+  #     deliveryPoint: ""
+  #     city: ""
+  #     administrativeArea: ""
+  #     postalCode: ""
+  #     country: ""
+  #   electronicMailAddress: ""
+  #   onlineUrl: ""
+
+  # --------------------------------------------------------------------------
+  # Methods - How data was collected/processed
+  # --------------------------------------------------------------------------
+
+  methods:
+    
+    # Method steps (OPTIONAL, repeatable)
+    methodStep:
+      - description:
+          para: ""  # Detailed description of this step
+        # instrumentation: ""  # OPTIONAL - Equipment used
+        # dataSource:  # OPTIONAL - If this step used external data
+        #   title: ""
+        #   creator:
+        #     individualName:
+        #       surName: ""
+        #   distribution:
+        #     online:
+        #       url: ""
+    
+    # Sampling description (OPTIONAL)
+    sampling:
+      studyExtent:
+        description:
+          para: ""  # Overall study area and duration
+      samplingDescription:
+        para: ""  # How samples were collected
+      # spatialSamplingUnits:  # OPTIONAL
+      #   coverage:
+      #     geographicCoverage:
+      #       geographicDescription: ""
+      #       boundingCoordinates:
+      #         westBoundingCoordinate: 0.0
+      #         eastBoundingCoordinate: 0.0
+      #         northBoundingCoordinate: 0.0
+      #         southBoundingCoordinate: 0.0
+    
+    # Quality control procedures (OPTIONAL)
+    qualityControl:
+      - description:
+          para: ""
+  
+  # --------------------------------------------------------------------------
+  # Project - Research project details
+  # --------------------------------------------------------------------------
+  
+  project:
+    title: ""  # REQUIRED - Project name
+    
+    # Project personnel (OPTIONAL, repeatable)
+    personnel:
+      - individualName:
+          givenName: ""
+          surName: ""
+        organizationName: ""
+        electronicMailAddress: ""
+        userId:
+          directory: "https://orcid.org"
+          userId: ""
+        role: ""  # REQUIRED - e.g., "principalInvestigator"
+    
+    # Abstract (OPTIONAL)
+    abstract:
+      para: ""
+    
+    # 
+    # OPTIONAL, repeatable The award field is used to provide specific information about the funding awards for a project in a structured format. 
+    award:
+      # The name of the funding institution, with fully expanded acronyms
+      # to show the full, official name of the funding agency. In general, this should match
+      # the official name of the funder as listed in an Authority such as the Open
+      # Funder Registry.
+      funderName: ""
+      funderIdentifier: ""
+      awardNumber: ""
+      title: ""
+      awardUrl: ""
+    
+    # additional optional fields to describe project - https://eml.ecoinformatics.org/schema/eml-dataset_xsd#DatasetType
+  
+  # --------------------------------------------------------------------------
+  # Data Tables and Other Entities
+  # --------------------------------------------------------------------------
+  
+  # Data tables (OPTIONAL, repeatable)
+  dataTable:
+    - entityName: ""  # REQUIRED - File name (e.g., "artis_trade_data.csv")
+      entityDescription: ""  # REQUIRED - What this table contains
+      physical:
+        objectName: ""  # REQUIRED - File name
+        size:
+          unit: "byte"  # REQUIRED
+          size: 0       # REQUIRED - File size in bytes
+        dataFormat:
+          textFormat:
+            numHeaderLines: 1  # Number of header rows
+            recordDelimiter: "\n"  # Line ending
+            attributeOrientation: "column"  # Usually "column"
+            simpleDelimited:
+              fieldDelimiter: ","  # e.g., "," for CSV, "\t" for TSV
+        # distribution: # Does KNB do this?
+        #   online:
+        #     url: ""  # REQUIRED - Download URL
+        #     # onlineDescription: ""  # OPTIONAL
+      
+      # Attribute (column) definitions (REQUIRED)
+      attributeList:
+        attribute:
+          # Example: Text/categorical attribute
+          - attributeName: ""  # REQUIRED - Column name (exact match)
+            attributeDefinition: ""  # REQUIRED - What this column represents
+            storageType: "string"  # OPTIONAL - Data type in file
+            measurementScale:
+              nominal:  # For categorical/text data
+                nonNumericDomain:
+                  textDomain:
+                    definition: ""  # Description of valid values
+                  # OR for enumerated domains:
+                  # enumeratedDomain:
+                  #   codeDefinition:
+                  #     - code: ""
+                  #       definition: ""
+          
+          # Example: Numeric attribute
+          - attributeName: ""
+            attributeDefinition: ""
+            storageType: "float"
+            measurementScale:
+              ratio:  # For numeric data with meaningful zero (use "interval" if no true zero)
+                unit:
+                  standardUnit: ""  # e.g., "kilogram", "meter", "dimensionless"
+                  # OR customUnit: ""  # If not in standard list
+                numericDomain:
+                  numberType: "real"  # "real", "integer", or "natural"
+                  # bounds:  # OPTIONAL - valid range
+                  #   minimum: 0.0
+                  #   maximum: 100.0
+          
+          # Example: Date/time attribute
+          - attributeName: ""
+            attributeDefinition: ""
+            storageType: "date"
+            measurementScale:
+              dateTime:
+                formatString: "YYYY-MM-DD"  # Date format (e.g., "YYYY-MM-DD", "YYYY")
+                dateTimePrecision: 1  # OPTIONAL
+                dateTimeDomain:
+                  bounds:  # OPTIONAL
+                    minimum: "1996-01-01"
+                    maximum: "2023-12-31"
+          
+          # Missing value codes (OPTIONAL, applies to any attribute)
+          # missingValueCode:
+          #   - code: "NA"
+          #     codeExplanation: "Not available"
+          #   - code: "-999"
+          #     codeExplanation: "Missing data"
+      
+      # Number of records (OPTIONAL)
+      numberOfRecords: 0
+      
+      # Constraints (OPTIONAL)
+      # constraint:
+      #   primaryKey:
+      #     - constraintName: ""
+      #       key:
+      #         attributeReference: ""  # Column name(s) for primary key
+  
+  # Other entities (OPTIONAL, repeatable) - for non-tabular files
+  otherEntity:
+    - entityName: ""  # REQUIRED - File name
+      entityDescription: ""  # REQUIRED
+      entityType: ""  # REQUIRED - e.g., "image", "document", "archive", "code"
+      physical:
+        objectName: ""
+        size:
+          unit: "byte"
+          size: 0
+        dataFormat:
+          externallyDefinedFormat:
+            formatName: ""  # e.g., "PNG", "PDF", "ZIP"
+        distribution:
+          online:
+            url: ""
+  
+# ============================================================================
+# Literature Cited (OPTIONAL)
+# ============================================================================
+    
+    # OPTIONAL - How users should cite this dataset
+  usageCitation:
+    - bibtex: |
+        @dataset{artis2025,
+          author = {Gephart, Jessica A. and others},
+          title = {ARTIS Global Seafood Trade Database v2.0},
+          year = {2025},
+          publisher = {Arctic Data Center},
+          doi = {10.18739/A2XXXXXXX}
+        }
+  
+  # OPTIONAL - Citations for literature referenced in the metadata
+  literatureCited:
+    - bibtex: |
+        @article{gephart2017,
+          author = {Gephart, Jessica A. and Pace, Michael L.},
+          title = {Structure and evolution of the global seafood trade network},
+          journal = {Environmental Research Letters},
+          year = {2017},
+          volume = {12},
+          number = {3},
+          pages = {034004},
+          doi = {10.1088/1748-9326/aa5a72}
+        }
+    - bibtex: |
+        @article{author2020,
+          author = {Author, Name},
+          title = {Another relevant publication},
+          journal = {Journal Name},
+          year = {2020},
+          doi = {10.xxxx/xxxxx}
+        }
+  
