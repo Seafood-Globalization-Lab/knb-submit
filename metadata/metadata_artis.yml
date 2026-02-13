@@ -28,7 +28,7 @@ dataset:
   title: "Aquatic Resource Trade in Species (ARTIS) 1.2 FAO" 
   
   # OPTIONAL Short name or acronym 
-  shortName: "ARTIS"
+  shortName: "ARTIS 1.2 FAO"
   
   # # (OPTIONAL, repeatable) Alternate identifiers - such as from a different management system 
   # alternateIdentifier:
@@ -62,11 +62,10 @@ dataset:
         - directory: "https://ror.org" # for ROR (resesarch org)
           userId: "https://ror.org/00cvxb145"
 
-  creator:
     - individualName:
         givenName: "Althea"   # First name(s)
         surName: "Marks"     # Last name (REQUIRED)
-      role: "contentProvider"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
+      role: "custodianSteward"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
       organizationName: "University of Washington"  # OPTIONAL
       positionName: "Data Scientist"      # OPTIONAL - Job title
       address:              # OPTIONAL
@@ -171,7 +170,7 @@ dataset:
   # --------------------------------------------------------------------------
   
   coverage:
-    
+
     # Geographic coverage (OPTIONAL, repeatable)
     geographicCoverage:
       - geographicDescription: ""  # Text description of area
@@ -185,9 +184,9 @@ dataset:
     temporalCoverage:
       - rangeOfDates:
           beginDate:
-            calendarDate: "1996"  # Format: YYYY-MM-DD
+            calendarDate: "1996"  # Format: YYYY-MM-DD OR YYYY
           endDate:
-            calendarDate: "2020"  # Format: YYYY-MM-DD
+            calendarDate: "2020"  # Format: YYYY-MM-DD OR YYYY
       # OR for single date:
       # - singleDateTime:
       #     calendarDate: ""
