@@ -9,7 +9,7 @@
 # ============================================================================
 # ROOT ELEMENT
 # ============================================================================
-
+---
 packageId: ""  # REQUIRED - Unique identifier for this metadata document (e.g., "doi:10.18739/A2XXXX" or "urn:uuid:...")
 system: ""     # REQUIRED - System that generated the packageId (e.g., "uuid", "doi", "knb")
 scope: "system"  # REQUIRED - Default is "system"
@@ -134,7 +134,7 @@ dataset:
 
     # Geographic coverage (OPTIONAL, repeatable)
     geographicCoverage:
-      - geographicDescription: ""  # Text description of area
+      - geographicDescription: "Global coverage"  # Text description of area
         boundingCoordinates:
           westBoundingCoordinate: -180   # Decimal degrees, -180 to 180
           eastBoundingCoordinate: 180   # Decimal degrees, -180 to 180
@@ -214,7 +214,7 @@ dataset:
   # funding awards are also listed by award number in the
   #eml-project award element,
   acknowledgements:
-    - para:
+    - para: 
 
   # OPTIONAL - Maintenance and update information
   maintenance:
@@ -362,12 +362,12 @@ dataset:
           userId: "https://ror.org/00cvxb145"
 
     # Abstract (OPTIONAL)
-  abstract:
+    abstract:
       para: ""
     
     # 
     # OPTIONAL, repeatable The award field is used to provide specific information about the funding awards for a project in a structured format. 
-  award:
+    award:
       # The name of the funding institution, with fully expanded acronyms
       # to show the full, official name of the funding agency. In general, this should match
       # the official name of the funder as listed in an Authority such as the Open
@@ -404,7 +404,6 @@ dataset:
         #   online:
         #     url: ""  # REQUIRED - Download URL
         #     # onlineDescription: ""  # OPTIONAL
-      
       # Attribute (column) definitions (REQUIRED)
       attributeList:
         attribute:
@@ -469,22 +468,22 @@ dataset:
       #         attributeReference: ""  # Column name(s) for primary key
   
   # Other entities (OPTIONAL, repeatable) - for non-tabular files
-  otherEntity:
-    - entityName: ""  # REQUIRED - File name
-      entityDescription: ""  # REQUIRED
-      entityType: ""  # REQUIRED - e.g., "image", "document", "archive", "code"
-      physical:
-        objectName: ""
-        size:
-          unit: "byte"
-          size: 0
-        dataFormat:
-          externallyDefinedFormat:
-            formatName: ""  # e.g., "PNG", "PDF", "ZIP"
-        distribution:
-          online:
-            url: ""
-  
+  # otherEntity:
+  #   - entityName: ""  # REQUIRED - File name
+  #     entityDescription: ""  # REQUIRED
+  #     entityType: ""  # REQUIRED - e.g., "image", "document", "archive", "code"
+  #     physical:
+  #       objectName: ""
+  #       size:
+  #         unit: "byte"
+  #         size: 0
+  #       dataFormat:
+  #         externallyDefinedFormat:
+  #           formatName: ""  # e.g., "PNG", "PDF", "ZIP"
+  #       distribution:
+  #         online:
+  #           url: ""
+
 # ============================================================================
 # Literature Cited (OPTIONAL)
 # ============================================================================
@@ -521,3 +520,4 @@ dataset:
   #         year = {2020},
   #         doi = {10.xxxx/xxxxx}
   #       }
+
