@@ -95,12 +95,10 @@ dataset:
      globalized, with trade doubling in recent decades. At the same time, seafood is now widely recognized 
      as a critical source of nutrition. Thus, social and environmental threats to local seafood production, 
      including environmental extremes, price impacts of market integration, networked risks, and increased 
-     availability of processed foods, must be evaluated in the context of global trade. These issues are 
-     paralleled by similar questions for other natural resources and are central to global food systems 
-     research. However, our collective understanding of the environmental and human outcomes of food 
+     availability of processed foods, must be evaluated in the context of global trade. However, our collective understanding of the environmental and human outcomes of food 
      system globalization is limited by a fundamental gap between production and trade data. We bridge 
      this gap in the Aquatic Resource Trade in Species (ARTIS) database by providing the first global 
-     estimates of seafood species and nutrient trade flows from 1996–2020." 
+     estimates of aquatic species trade flows." 
 
   # OPTIONAL, repeatable , highly suggested
   keywordSet:
@@ -158,10 +156,8 @@ dataset:
       # in the data set or collection. Example "All vascular plants were identified to 
       # family or species, mosses and lichens were identified as moss or lichen."
       - generalTaxonomicCoverage: "2000+ farmed and wild capture aquatic species which in 
-          turn were matched to 900+ traded seafood product descriptions. Though we include 
-          nonfood (e.g., fish meal, bait, and ornamental trade) production and trade in the 
-          database, we exclude this from the analysis of aquatic food production and consumption. 
-          We also exclude mammals, reptiles, fowl, or seaweeds, along with co-products 
+          turn were matched to 900+ traded seafood product descriptions. 
+          We exclude mammals, reptiles, fowl, or seaweeds, along with co-products 
           (e.g., caviar, shark fins, and fish meat) to avoid double counting, from the model 
           and resulting database."  
         taxonomicClassification:
@@ -250,7 +246,7 @@ dataset:
         country: "United State of America"
       phone: ""             # OPTIONAL (repeatable)
       electronicMailAddress: "gephart@uw.edu"  # OPTIONAL (repeatable)
-      onlineUrl: "https://seafood-globalization-lab.weebly.com/"         # OPTIONAL - Personal website
+      onlineUrl: ""         # OPTIONAL - Personal website
       userId:               # OPTIONAL - ORCID or other identifier
         - directory: "https://orcid.org"  # For ORCID
           userId: "https://orcid.org/0000-0001-6836-9291"          # e.g., "0000-0002-1234-5678"
@@ -374,7 +370,7 @@ dataset:
       # Funder Registry.
       funderName: "National Science Foundation"
       funderIdentifier: "https://ror.org/021nxhr62 or https://ror.org/03h7mcc28"
-      awardNumber: "HNDS-I #2121238 OR 2504715"
+      awardNumber: "HNDS-I #2504715 (formerly #2121238)"
       title: "Collaborative Research: HNDS-I: A global seafood trade network database for sustainable food systems, human health, and nutrition security"
       awardUrl: "https://www.nsf.gov/funding/opportunities/hnds-human-networks-data-science"
     
