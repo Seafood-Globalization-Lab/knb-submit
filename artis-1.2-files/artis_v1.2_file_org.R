@@ -11,9 +11,12 @@
 
 
 # Libraries -------------------------------------------------------------------
+# designate primary software repo and snapshot date 
 pak::repo_add(CRAN = "RSPM@2025-10-31")
+# show software repo status
 #pak::repo_get()
 
+# list packages
 pkgs <- c(
   "qs2",
   "arrow",
@@ -25,9 +28,10 @@ pkgs <- c(
   "magrittr",
   "janitor"
 )
-
+# install with pak
 pak::pkg_install(pkgs)
-invisible(lapply(pkgs, library, character.only = TRUE))
+# load packages
+invisible(lapply(pkgs, FUN = library, character.only = TRUE))
 
 # Config - edit these paths ---------------------------------------------------
 ARTIS_file <- "consumption"
