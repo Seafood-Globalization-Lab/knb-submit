@@ -11,6 +11,7 @@
 # ============================================================================
 ---
 packageId: ""  # REQUIRED - Unique identifier for this metadata document (e.g., "doi:10.18739/A2XXXX" or "urn:uuid:...")
+schemaLocation: "https://eml.ecoinformatics.org/eml-2.2.0 eml.xsd"
 system: ""     # REQUIRED - System that generated the packageId (e.g., "uuid", "doi", "knb")
 scope: "system"  # REQUIRED - Default is "system"
 
@@ -41,7 +42,8 @@ dataset:
   
 # Dataset creators (REQUIRED, repeatable)
   creator:
-    - individualName:
+    - 
+      individualName:
         givenName: "Jessica"   # First name(s)
         surName: "Gephart"     # Last name (REQUIRED)
       role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
@@ -62,7 +64,8 @@ dataset:
         - directory: "https://ror.org" # for ROR (resesarch org)
           userId: "https://ror.org/00cvxb145"
 
-    - individualName:
+    - 
+      individualName:
         givenName: "Althea"   # First name(s)
         surName: "Marks"     # Last name (REQUIRED)
       role: "custodianSteward"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
@@ -232,7 +235,8 @@ dataset:
 
   # Contact information (REQUIRED, repeatable)
   contact:
-    - individualName:
+    - 
+      individualName:
         givenName: "Jessica"   # First name(s)
         surName: "Gephart"     # Last name (REQUIRED)
       role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
@@ -316,7 +320,8 @@ dataset:
     
     # Project personnel (OPTIONAL, repeatable)
     personnel:
-    - individualName:
+    - 
+      individualName:
         givenName: "Jessica"   # First name(s)
         surName: "Gephart"     # Last name (REQUIRED)
       role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
@@ -337,7 +342,8 @@ dataset:
         - directory: "https://ror.org" # for ROR (resesarch org)
           userId: "https://ror.org/00cvxb145"
 
-    - individualName:
+    - 
+      individualName:
         givenName: "Althea"   # First name(s)
         surName: "Marks"     # Last name (REQUIRED)
       role: "custodianSteward"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user

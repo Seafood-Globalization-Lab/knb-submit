@@ -31,19 +31,26 @@ pak::pak(c(
   "yaml",
   "emld",
   "xml2",
-  "nceas/arcticdatautils"
+  "nceas/arcticdatautils",
+  "dataone"
 ))
 # load packages from library
 library(EML)
 library(yaml)
 library(emld)
 library(arcticdatautils)
+library(dataone)
 
 # read YAML metadata file ------------------------------------------------
 eml_yml <- yaml::read_yaml("./metadata/metadata_artis.yml")
 
 # Note: emld pkg does not contain a template of EML. 
 
+
+# Example EML ------------------------------------------------------------
+
+d1c_test <- dataone::D1Client("STAGING", "urn:node:mnTestARCTIC")
+doc <- read_eml(getObject(d1c_test@mn, "urn:uuid:558eabf1-1e91-4881-8ba3-ef8684d8f6a1"))
 
 # Define Funciton to remove empty fields ---------------------------------------------
 
@@ -211,7 +218,7 @@ eml_list <- list(
     #alternateIdentifier = eml$alternateIdentifier(eml_yml$dataset$alternateIdentifier),
     
     # Responsible parties - creator (required, can be multiple)
-    creator = eml$creator(individualName =  list(eml_yml$dataset$creator[[1]]),
+    creator = eml$creator(individualName =  list(eml_yml$dataset$creator[[1]])),
     
     # Metadata provider (optional)
     metadataProvider = eml_yml$dataset$metadataProvider,
