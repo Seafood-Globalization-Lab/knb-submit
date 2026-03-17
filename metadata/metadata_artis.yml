@@ -46,7 +46,6 @@ dataset:
       individualName:
         givenName: "Jessica"   # First name(s)
         surName: "Gephart"     # Last name (REQUIRED)
-      role: "principalInvestigator"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
       organizationName: "University of Washington"  # OPTIONAL
       positionName: "Assistant Professor"      # OPTIONAL - Job title
       address:              # OPTIONAL
@@ -68,7 +67,6 @@ dataset:
       individualName:
         givenName: "Althea"   # First name(s)
         surName: "Marks"     # Last name (REQUIRED)
-      role: "custodianSteward"          # Use standard value or any arbitrary string - author, contentProvider, custodianSteward, distributor, editor, metadataProvider, originator, pointOfContact, principalInvestigator, processor, publisher, or user
       organizationName: "University of Washington"  # OPTIONAL
       positionName: "Data Scientist"      # OPTIONAL - Job title
       address:              # OPTIONAL
