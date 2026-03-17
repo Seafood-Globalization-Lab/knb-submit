@@ -54,3 +54,4 @@ outputs/*
 README_files/*
 
 *.html
+.vscode
