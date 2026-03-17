@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" packageId="doi:10.xxxx/PLACEHOLDER" system="doi" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd">
+  <dataset>
+    <shortName>ARTIS 1.2 FAO</shortName>
+    <title>Aquatic Resource Trade in Species (ARTIS) 1.2 FAO</title>
+    <creator>
+      <address>
+        <deliveryPoint>1122 NE Boat St</deliveryPoint>
+        <city>Seattle</city>
+        <administrativeArea>Washington</administrativeArea>
+        <postalCode>98195</postalCode>
+        <country>United State of America</country>
+      </address>
+      <electronicMailAddress>gephart@uw.edu</electronicMailAddress>
+      <individualName>
+        <givenName>Jessica</givenName>
+        <surName>Gephart</surName>
+      </individualName>
+      <onlineUrl>https://seafood-globalization-lab.weebly.com/</onlineUrl>
+      <organizationName>University of Washington</organizationName>
+      <positionName>Assistant Professor</positionName>
+      <role>principalInvestigator</role>
+      <userId directory="https://orcid.org">https://orcid.org/0000-0001-6836-9291</userId>
+      <userId directory="https://ror.org">https://ror.org/00cvxb145</userId>
+    </creator>
+    <creator>
+      <address>
+        <deliveryPoint>1122 NE Boat St</deliveryPoint>
+        <city>Seattle</city>
+        <administrativeArea>Washington</administrativeArea>
+        <postalCode>98195</postalCode>
+        <country>United State of America</country>
+      </address>
+      <electronicMailAddress>amarks1@uw.edu</electronicMailAddress>
+      <individualName>
+        <givenName>Althea</givenName>
+        <surName>Marks</surName>
+      </individualName>
+      <organizationName>University of Washington</organizationName>
+      <positionName>Data Scientist</positionName>
+      <role>custodianSteward</role>
+      <userId directory="https://orcid.org">https://orcid.org/0000-0002-9370-9128</userId>
+      <userId directory="https://ror.org">https://ror.org/00cvxb145</userId>
+    </creator>
+    <pubDate>2026</pubDate>
+    <language>en</language>
+    <abstract>
+      <para>Food systems have become increasingly globalized, with over a quarter of all food now traded internationally. Seafood is among the most highly traded foods and it is becoming increasingly globalized, with trade doubling in recent decades. At the same time, seafood is now widely recognized as a critical source of nutrition. Thus, social and environmental threats to local seafood production, including environmental extremes, price impacts of market integration, networked risks, and increased availability of processed foods, must be evaluated in the context of global trade. However, our collective understanding of the environmental and human outcomes of food system globalization is limited by a fundamental gap between production and trade data. We bridge this gap in the Aquatic Resource Trade in Species (ARTIS) database by providing the first global estimates of aquatic species trade flows.</para>
+    </abstract>
+    <keywordSet>
+      <keyword>Seafood</keyword>
+      <keyword>Aquatic food</keyword>
+      <keyword>Trade</keyword>
+      <keyword>Globalization</keyword>
+      <keyword>Supply Chain</keyword>
+      <keyword>Traceability</keyword>
+    </keywordSet>
+    <licensed>
+      <licenseName>Creative Commons Attribution 4.0 International</licenseName>
+      <url>https://spdx.org/licenses/CC-BY-4.0.html</url>
+      <identifier>CC-BY-4.0</identifier>
+    </licensed>
+    <coverage>
+      <geographicCoverage>
+        <geographicDescription>Global coverage</geographicDescription>
+        <boundingCoordinates>
+          <westBoundingCoordinate>-180</westBoundingCoordinate>
+          <eastBoundingCoordinate>180</eastBoundingCoordinate>
+          <northBoundingCoordinate>90</northBoundingCoordinate>
+          <southBoundingCoordinate>-90</southBoundingCoordinate>
+        </boundingCoordinates>
+      </geographicCoverage>
+      <temporalCoverage>
+        <rangeOfDates>
+          <beginDate>
+            <calendarDate>1996</calendarDate>
+          </beginDate>
+          <endDate>
+            <calendarDate>2020</calendarDate>
+          </endDate>
+        </rangeOfDates>
+      </temporalCoverage>
+      <taxonomicCoverage>
+        <generalTaxonomicCoverage>2000+ farmed and wild capture aquatic species which in turn were matched to 900+ traded seafood product descriptions. We exclude mammals, reptiles, fowl, or seaweeds, along with co-products (e.g., caviar, shark fins, and fish meat) to avoid double counting, from the model and resulting database.</generalTaxonomicCoverage>
+        <taxonomicClassification>
+          <taxonRankName>Kingdom</taxonRankName>
+          <taxonRankValue>Animalia</taxonRankValue>
+        </taxonomicClassification>
+      </taxonomicCoverage>
+    </coverage>
+    <maintenance>
+      <description>
+        <para>This dataset is updated annually with new trade year data.</para>
+      </description>
+      <maintenanceUpdateFrequency>annually</maintenanceUpdateFrequency>
+      <changeHistory>
+        <changeScope>dataset</changeScope>
+        <oldValue>v1.0</oldValue>
+        <changeDate>2024-01-15</changeDate>
+        <comment>This release builds on significant updates the calculation of the ARTIS consumption table; particularly for fishmeal-priority species. Major logic changes in calculate_consumption() refine how domestic and foreign consumption are calculated, per-capita limits are applied, and fishmeal allocations are made. Specific to v1.2.0 - fishmeal species preference was assigned using industry reports and grey literature. https://github.com/Seafood-Globalization-Lab/artis-model/releases/tag/v1.2.0</comment>
+      </changeHistory>
+    </maintenance>
+    <contact>
+      <address>
+        <deliveryPoint>1122 NE Boat St</deliveryPoint>
+        <city>Seattle</city>
+        <administrativeArea>Washington</administrativeArea>
+        <postalCode>98195</postalCode>
+        <country>United State of America</country>
+      </address>
+      <electronicMailAddress>gephart@uw.edu</electronicMailAddress>
+      <individualName>
+        <givenName>Jessica</givenName>
+        <surName>Gephart</surName>
+      </individualName>
+      <organizationName>University of Washington</organizationName>
+      <positionName>Assistant Professor</positionName>
+      <role>principalInvestigator</role>
+      <userId directory="https://orcid.org">https://orcid.org/0000-0001-6836-9291</userId>
+      <userId directory="https://ror.org">https://ror.org/00cvxb145</userId>
+    </contact>
+    <methods>
+      <methodStep>
+        <description>
+          <para>Please see https://seafood-globalization-lab.github.io/artis-manual/artis-our-model/</para>
+        </description>
+      </methodStep>
+      <qualityControl>
+        <description>
+          <para>value checks emedded in the model code and post-processing assumption validation reports</para>
+        </description>
+      </qualityControl>
+    </methods>
+    <project>
+      <title>Aquatic Resource Trade in Species (ARTIS)</title>
+      <personnel>
+        <individualName>
+          <givenName>Jessica</givenName>
+          <surName>Gephart</surName>
+        </individualName>
+        <organizationName>University of Washington</organizationName>
+        <positionName>Assistant Professor</positionName>
+        <address>
+          <deliveryPoint>1122 NE Boat St</deliveryPoint>
+          <city>Seattle</city>
+          <administrativeArea>Washington</administrativeArea>
+          <postalCode>98195</postalCode>
+          <country>United State of America</country>
+        </address>
+        <electronicMailAddress>gephart@uw.edu</electronicMailAddress>
+        <onlineUrl>https://seafood-globalization-lab.weebly.com/</onlineUrl>
+        <userId directory="https://orcid.org">https://orcid.org/0000-0001-6836-9291</userId>
+        <userId directory="https://ror.org">https://ror.org/00cvxb145</userId>
+        <role>principalInvestigator</role>
+      </personnel>
+      <personnel>
+        <individualName>
+          <givenName>Althea</givenName>
+          <surName>Marks</surName>
+        </individualName>
+        <organizationName>University of Washington</organizationName>
+        <positionName>Data Scientist</positionName>
+        <address>
+          <deliveryPoint>1122 NE Boat St</deliveryPoint>
+          <city>Seattle</city>
+          <administrativeArea>Washington</administrativeArea>
+          <postalCode>98195</postalCode>
+          <country>United State of America</country>
+        </address>
+        <electronicMailAddress>amarks1@uw.edu</electronicMailAddress>
+        <userId directory="https://orcid.org">https://orcid.org/0000-0002-9370-9128</userId>
+        <userId directory="https://ror.org">https://ror.org/00cvxb145</userId>
+        <role>custodianSteward</role>
+      </personnel>
+      <award>
+        <funderName>National Science Foundation</funderName>
+        <funderIdentifier>https://ror.org/021nxhr62 or https://ror.org/03h7mcc28</funderIdentifier>
+        <awardNumber>HNDS-I #2504715 (formerly #2121238)</awardNumber>
+        <title>Collaborative Research: HNDS-I: A global seafood trade network database for sustainable food systems, human health, and nutrition security</title>
+        <awardUrl>https://www.nsf.gov/funding/opportunities/hnds-human-networks-data-science</awardUrl>
+      </award>
+    </project>
+    <dataTable>
+      <physical>
+        <size unit="byte">0</size>
+        <dataFormat>
+          <textFormat>
+            <numHeaderLines>1</numHeaderLines>
+            <recordDelimiter>
+</recordDelimiter>
+            <attributeOrientation>column</attributeOrientation>
+            <simpleDelimited>
+              <fieldDelimiter>,</fieldDelimiter>
+            </simpleDelimited>
+          </textFormat>
+        </dataFormat>
+      </physical>
+      <attributeList>
+        <attribute>
+          <storageType>string</storageType>
+        </attribute>
+        <attribute>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <numericDomain>
+                <numberType>real</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute>
+          <storageType>date</storageType>
+          <measurementScale>
+            <dateTime>
+              <formatString>YYYY-MM-DD</formatString>
+              <dateTimePrecision>1</dateTimePrecision>
+              <dateTimeDomain>
+                <bounds>
+                  <minimum>1996-01-01</minimum>
+                  <maximum>2023-12-31</maximum>
+                </bounds>
+              </dateTimeDomain>
+            </dateTime>
+          </measurementScale>
+        </attribute>
+      </attributeList>
+      <numberOfRecords>0</numberOfRecords>
+    </dataTable>
+  </dataset>
+</eml:eml>

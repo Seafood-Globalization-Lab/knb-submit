@@ -46,17 +46,25 @@ eml_yml <- yaml::read_yaml("./metadata/metadata_artis.yml")
 # Fun to remove empty fields ---------------------------------------------
 
 # Remove NULL, empty strings, and empty lists recursively
+# dives into list and cleans from the bottom up
 clean_empty <- function(x) {
+  # only run on lists, individual values skip to the 2nd if statement
   if (is.list(x)) {
+    # calls function on every element of list - this is the recursive component
     x <- lapply(x, clean_empty)
+    # remove null values
     x <- x[!sapply(x, is.null)]
+    # remove empty string values
     x <- x[!sapply(x, function(i) is.character(i) && length(i) == 1 && i == "")]
+    # remove empty lists
     x <- x[!sapply(x, function(i) is.list(i) && length(i) == 0)]
   }
+  # If item NOT a list (i.e. a scalar value) - then run this conditional 
   if (length(x) == 0) return(NULL)
   x
-}
+} 
 
+# clean the eml list object - clean every element recursively
 eml_yml_clean <- clean_empty(eml_yml)
 
 # assign yml values to EML -----------------------------------------------
@@ -136,39 +144,30 @@ eml_list <- list(
     view = eml_yml_clean$dataset$view,
     otherEntity = eml_yml_clean$dataset$otherEntity
   ),
-  
-  # Additional metadata (optional)
-  additionalMetadata = eml_yml_clean$additionalMetadata,
-  
-  # Access control (optional)
-  access = eml_yml_clean$access
+  # Root EML attributes — emld maps these to XML attributes on <eml>
+  packageId = eml_yml_clean$packageId,
+  system    = eml_yml_clean$system,
+  scope     = eml_yml_clean$scope
 )
+
+# # quick test
+# eml_list_test <- clean_empty(list(
+#   dataset   = eml_yml$dataset,   # take the whole dataset subtree as-is
+#   packageId = "doi:10.xxxx/PLACEHOLDER",
+#   system    = "doi"
+# ))
+
+# # 
+# #as_xml(eml_list_test, "./test_eml.xml")
+# write_eml(eml_list_test, "./test_eml_eml.xml")
+# eml_validate("./test_eml_eml.xml")
 
 # Clean the structure again to remove any NULLs from optional fields
 eml_list <- clean_empty(eml_list)
+write_eml(eml_list, "./eml_write_from_yml.xml")
+eml_validate("./eml_write_from_yml.xml")
 
-# Convert to XML
-eml_xml <- emld::as_xml(eml_list, ns = "eml")
-
-# Now add root attributes using xml2
-eml_root <- xml2::xml_root(eml_xml)
-xml2::xml_set_attr(eml_root, "packageId", eml_yml_clean$packageId)
-xml2::xml_set_attr(eml_root, "system", eml_yml_clean$system)
-xml2::xml_set_attr(eml_root, "scope", eml_yml_clean$scope)
-
-# Get the root node (the <eml> element)
-# eml_root <- xml2::xml_root(eml_xml)
-
-# # Add required attributes to root <eml> element
-# xml2::xml_set_attr(eml_xml, "packageId", eml_yml_clean$packageId)
-# xml2::xml_set_attr(eml_xml, "system", eml_yml_clean$system)
-# xml2::xml_set_attr(eml_xml, "scope", eml_yml_clean$scope)
-
-# Write out EML xml
-xml2::write_xml(eml_xml, "./metadata/artis-eml.xml")
-
-# Validate
-EML::eml_validate("./metadata/artis-eml.xml")
+# Validating "./eml_write_from_yml.xml" 
 
 
 
