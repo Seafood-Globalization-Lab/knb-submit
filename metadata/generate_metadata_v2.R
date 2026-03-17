@@ -30,12 +30,14 @@ pak::pak(c(
   "EML",
   "yaml",
   "emld",
-  "xml2"
+  "xml2",
+  "nceas/arcticdatautils"
 ))
 # load packages from library
 library(EML)
 library(yaml)
 library(emld)
+library(arcticdatautils)
 
 # read YAML metadata file ------------------------------------------------
 eml_yml <- yaml::read_yaml("./metadata/metadata_artis.yml")
@@ -43,7 +45,7 @@ eml_yml <- yaml::read_yaml("./metadata/metadata_artis.yml")
 # Note: emld pkg does not contain a template of EML. 
 
 
-# Fun to remove empty fields ---------------------------------------------
+# Define Funciton to remove empty fields ---------------------------------------------
 
 # Remove NULL, empty strings, and empty lists recursively
 # dives into list and cleans from the bottom up
@@ -64,12 +66,17 @@ clean_empty <- function(x) {
   x
 } 
 
+
+# Clean empty values from YAML values ------------------------------------
+
 # clean the eml list object - clean every element recursively
 eml_yml_clean <- clean_empty(eml_yml)
 
-# assign yml values to EML -----------------------------------------------
+# Assign yml values to EML List -----------------------------------------------
 
-# Build EML document structure following EML 2.2.0 schema
+# NOTE - AM 2026-03-17 
+
+# Build EML document structure following EML 2.2.0 schema extracted with Claude from EML schema repo
 eml_list <- list(
   
   # Dataset element (must follow schema order)
@@ -167,9 +174,104 @@ eml_list <- clean_empty(eml_list)
 write_eml(eml_list, "./eml_write_from_yml.xml")
 eml_validate("./eml_write_from_yml.xml")
 
-# Validating "./eml_write_from_yml.xml" 
+# test reading file back in
+test_read_eml <- read_eml("./eml_write_from_yml.xml")
+class(test_read_eml) 
+# [1] "emld" "list"
+
+# AM 2026-03-17 - Validating "./eml_write_from_yml.xml" is throwoing errors - maybe I have the yaml subelements out of order?
+# [1] FALSE
+# attr(,"errors")
+# [1] "Element 'address': This element is not expected. Expected is one of ( references, individualName, organizationName, positionName )."
+# [2] "Element 'address': This element is not expected. Expected is one of ( references, individualName, organizationName, positionName )."
+# [3] "Element 'address': This element is not expected. Expected is one of ( references, individualName, organizationName, positionName )."
+# [4] "Element 'physical': This element is not expected. Expected is one of ( alternateIdentifier, entityName, references )."   
 
 
 
+# Attempt 2 Build EML list from Yml values -------------------------------
 
+# Use EMl / articutils to protect sublist structure?
+# I don't think providing a list through `eml$element()` function works if I supply it with a list
+
+eml_list <- list(
+  
+  #   # Root EML attributes — emld maps these to XML attributes on <eml>
+  # packageId = eml$packageID(eml_yml$packageId),
+  # system    = eml_yml$system,
+  # scope     = eml_yml$scope,
+
+  # Dataset element (must follow schema order)
+  dataset = list(
+    # Basic identification
+    title = eml$title(value = eml_yml$dataset$title),
+    #shortName = eml_yml$dataset$shortName,
+    
+    # AlternateIdentifier (optional, can be multiple)
+    #alternateIdentifier = eml$alternateIdentifier(eml_yml$dataset$alternateIdentifier),
+    
+    # Responsible parties - creator (required, can be multiple)
+    creator = eml$creator(individualName =  list(eml_yml$dataset$creator[[1]]),
+    
+    # Metadata provider (optional)
+    metadataProvider = eml_yml$dataset$metadataProvider,
+    
+    # Associated parties (optional)
+    associatedParty = eml_yml$dataset$associatedParty,
+    
+    # Publication info
+    pubDate = eml_yml$dataset$pubDate,
+    language = eml_yml$dataset$language,
+    
+    # Series (optional)
+    series = eml_yml$dataset$series,
+    
+    # Abstract (required)
+    abstract = eml_yml$dataset$abstract,
+    
+    # Keywords (optional, can be multiple sets)
+    keywordSet = eml_yml$dataset$keywordSet,
+    
+    # Additional info (optional)
+    additionalInfo = eml_yml$dataset$additionalInfo,
+    
+    # Intellectual rights (recommended)
+    intellectualRights = eml_yml$dataset$intellectualRights,
+    
+    # Licensed (optional, replaces intellectualRights in newer versions)
+    licensed = eml_yml$dataset$licensed,
+    
+    # Distribution/access (optional)
+    distribution = eml_yml$dataset$distribution,
+    
+    # Coverage (recommended)
+    coverage = eml_yml$dataset$coverage,
+    
+    # Maintenance (optional)
+    maintenance = eml_yml$dataset$maintenance,
+    
+    # Contact (required, can be multiple)
+    contact = eml_yml$dataset$contact,
+    
+    # Publisher (optional)
+    publisher = eml_yml$dataset$publisher,
+    
+    # Publishing details (optional)
+    pubPlace = eml_yml$dataset$pubPlace,
+    
+    # Methods (recommended)
+    methods = eml_yml$dataset$methods,
+    
+    # Project (optional)
+    project = eml_yml$dataset$project,
+    
+    # Data entities (at least one required for data packages)
+    dataTable = eml_yml$dataset$dataTable,
+    spatialRaster = eml_yml$dataset$spatialRaster,
+    spatialVector = eml_yml$dataset$spatialVector,
+    storedProcedure = eml_yml$dataset$storedProcedure,
+    view = eml_yml$dataset$view,
+    otherEntity = eml_yml$dataset$otherEntity
+  )
+)
 
