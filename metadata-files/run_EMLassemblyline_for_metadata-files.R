@@ -23,10 +23,12 @@
 pak::repo_add(CRAN = "RSPM@2025-10-01")
 pak::pak(c(
   "EDIorg/EMLassemblyline",
-  "usethis"
+  "usethis",
+  "arrow"
 ))
 library(EMLassemblyline)
 library(usethis)
+library(arrow)
 
 # set path to pre-released ARTIS dataset locally on AM's machine in 
 # .Renviron file at project level
@@ -35,7 +37,7 @@ artis_files_path <- Sys.getenv("ARTIS_DB_PATH")
 
 # Define paths for your metadata templates, data, and EML
 path_templates <- "./metadata-files"
-path_data <- file.path(artis_files_path, "")
+path_data <- file.path(artis_files_path)
 path_eml <- ""
 
 # Create metadata templates ---------------------------------------------------
@@ -44,6 +46,7 @@ path_eml <- ""
 # They are meant to be a reminder and save you a little time. Remove the 
 # functions and arguments you don't need AND ... don't forget to read the docs! 
 # E.g. ?template_core_metadata
+# can rerun - will not overwrite
 
 # Create core templates (required for all data packages)
 
@@ -53,11 +56,23 @@ EMLassemblyline::template_core_metadata(
   file.type = ".md")
 
 # Create table attributes template (required when data tables are present)
+# function is not compatible with parquet file format. Create template and replicated for 
+# each data table/file
+# EMLassemblyline::template_table_attributes(
+#   path = path_templates,
+#   data.path = file.path(path_data, "reference_tables"),
+#   data.table = c("ARTIS_v1.2_FAO_reference_baci_trade.csv"))
 
-EMLassemblyline::template_table_attributes(
-  path = path_templates,
-  data.path = path_data,
-  data.table = c(""))
+path_consump <- file.path(path_data, "consumption")
+ds_consump <- arrow::open_dataset(path_consump)
+
+source("./functions/eml_helper_functions.R")
+
+help_write_eml_attributes(
+  data_table   = ds_consump,
+  out_path = file.path(path_templates, "attributes_ARTIS_v1.2_FAO_consumption.txt")
+)
+# edit values manually in spreadsheet
 
 # Create categorical variables template (required when attributes templates
 # contains variables with a "categorical" class)
