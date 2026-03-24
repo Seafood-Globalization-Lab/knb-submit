@@ -1,0 +1,13 @@
+attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
+hs_version		categorical				
+year		numeric	!Add units here!			
+prod_country_iso3c		categorical				
+exporter_iso3c		categorical				
+importer_iso3c		categorical				
+export_type		categorical				
+hs6		categorical				
+sciname		categorical				
+habitat		categorical				
+method		categorical				
+product_weight_t		numeric	!Add units here!			
+live_weight_t		numeric	!Add units here!			

@@ -1,0 +1,16 @@
+attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
+sciname		categorical				
+common_name		categorical				
+genus		categorical				
+subfamily		categorical				
+family		categorical				
+order		categorical				
+class		categorical				
+superclass		categorical				
+phylum		categorical				
+kingdom		categorical				
+aquarium		categorical				
+fresh01		numeric	!Add units here!			
+brack01		numeric	!Add units here!			
+saltwater01		numeric	!Add units here!			
+isscaap_group		categorical				

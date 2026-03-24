@@ -68,10 +68,38 @@ ds_consump <- arrow::open_dataset(path_consump)
 
 source("./functions/eml_helper_functions.R")
 
-help_write_eml_attributes(
-  data_table   = ds_consump,
-  out_path = file.path(path_templates, "attributes_ARTIS_v1.2_FAO_consumption.txt")
+# gather vector of files to document
+# all reference tables, a sinlge represenative trade and consumption file
+my_data_tables <- list.files(
+  file.path(path_data, "reference_tables"),
+  full.names = TRUE
+) %>% c(
+  list.files(
+    file.path(path_data, "trade", "HS96"),
+    full.names = TRUE)[1]
+) %>% c(
+  list.files(
+    file.path(path_data, "consumption", "HS96"),
+  full.names = TRUE)[1]
 )
+
+# run help_write_eml_attributes() over each file to generate EML attributes template
+purrr::walk(my_data_tables, \(file_path) {
+  base_name <- tools::file_path_sans_ext(basename(file_path))
+  
+  # strip _HS##_YYYY suffix from trade and consumption filenames
+  base_name <- sub("_HS\\d+_\\d+", "", base_name)
+  
+  out_path <- file.path(path_templates, paste0("attributes_", base_name, ".txt"))
+  
+  ds <- arrow::open_dataset(file_path)
+  
+  help_write_eml_attributes(
+    data_table = ds,
+    out_path   = out_path
+  )
+})
+
 # edit values manually in spreadsheet
 
 # Create categorical variables template (required when attributes templates

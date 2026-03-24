@@ -1,0 +1,7 @@
+attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
+comtrade_classification		categorical				
+hs6		categorical				
+hs6_description		categorical				
+hs6_parent		categorical				
+hs6_presentation		categorical				
+hs6_state		categorical				

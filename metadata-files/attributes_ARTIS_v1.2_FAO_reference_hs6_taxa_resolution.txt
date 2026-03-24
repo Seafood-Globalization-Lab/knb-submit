@@ -1,0 +1,12 @@
+attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
+hs_version		categorical				
+sciname		categorical				
+scinmae_hs6_modified		categorical				
+match_category		categorical				
+hs6_description		categorical				
+modification		categorical				
+hs6_clade		categorical				
+hs6_taxa_level		categorical				
+prod_taxa_level		categorical				
+hs6_taxa_level_numeric		numeric	!Add units here!			
+sciname_hs6_modified		categorical				
