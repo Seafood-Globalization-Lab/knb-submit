@@ -37,11 +37,23 @@ artis_files_path <- Sys.getenv("ARTIS_DB_PATH")
 
 # Define paths for your metadata templates, data, and EML
 path_templates <- "./metadata-files"
-path_data <- file.path(artis_files_path)
-path_eml <- ""
+
+# where ARTIS .csv data subset will be writen to
+path_data <- file.path(path_templates, "data_objects")
+path_eml <- file.path(path_templates, "eml")
 
 # load helper functions
-source("./functions/eml_helper_functions.R")
+source("./functions/ARTIS_EAL_helper_functions.R")
+
+# get the filepaths to select representative ARTIS data files
+paths_artis_subset <- get_parquet_data_subset(
+  path_data_dir = artis_files_path
+)
+
+convert_artis_to_csv(
+  paths_artis_parquet = paths_artis_subset, 
+  path_write_csv = path_data)
+
 # Create metadata templates ---------------------------------------------------
 
 # Below is a list of boiler plate function calls for creating metadata templates.
@@ -58,53 +70,12 @@ EMLassemblyline::template_core_metadata(
   file.type = ".md")
 
 # Create table attributes template (required when data tables are present)
-# function is not compatible with parquet file format. Created helper functions 
-# to replicate this functionality for parquet files.
-# EMLassemblyline::template_table_attributes(
-#   path = path_templates,
-#   data.path = file.path(path_data, "reference_tables"),
-#   data.table = c("ARTIS_v1.2_FAO_reference_baci_trade.csv"))
+# function is not compatible with parquet file format. 
 
-# testing to figure out custom_units.txt generation behavior for multiple or single files
 EMLassemblyline::template_table_attributes(
   path = path_templates,
-  data.path = file.path(path_data, "reference_tables")#,
-  #data.table = c("ARTIS_v1.2_FAO_reference_hs6.csv")
-)
-# looks like it writes a single custom_units.txt for 6 reference tables
-
-
-# gather vector of files to document
-# all reference tables, a sinlge represenative trade and consumption file
-my_data_tables <- list.files(
-  file.path(path_data, "reference_tables"),
-  full.names = TRUE
-) %>% c(
-  list.files(
-    file.path(path_data, "trade", "HS96"),
-    full.names = TRUE)[1]
-) %>% c(
-  list.files(
-    file.path(path_data, "consumption", "HS96"),
-  full.names = TRUE)[1]
-)
-
-# run help_write_eml_attributes() over each file to generate EML attributes template
-purrr::walk(my_data_tables, \(file_path) {
-  base_name <- tools::file_path_sans_ext(basename(file_path))
-  
-  # strip _HS##_YYYY suffix from trade and consumption filenames
-  base_name <- sub("_HS\\d+_\\d+", "", base_name)
-  
-  out_path <- file.path(path_templates, paste0("attributes_", base_name, ".txt"))
-  
-  ds <- arrow::open_dataset(file_path)
-  
-  help_write_eml_attributes(
-    data_table = ds,
-    out_path   = out_path
-  )
-})
+  data.path = file.path(path_data, "reference_tables"),
+  data.table = c("ARTIS_v1.2_FAO_reference_baci_trade.csv"))
 
 # edit values manually in spreadsheet
 
