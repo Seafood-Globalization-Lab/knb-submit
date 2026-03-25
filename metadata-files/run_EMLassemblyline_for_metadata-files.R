@@ -40,6 +40,8 @@ path_templates <- "./metadata-files"
 path_data <- file.path(artis_files_path)
 path_eml <- ""
 
+# load helper functions
+source("./functions/eml_helper_functions.R")
 # Create metadata templates ---------------------------------------------------
 
 # Below is a list of boiler plate function calls for creating metadata templates.
@@ -56,17 +58,21 @@ EMLassemblyline::template_core_metadata(
   file.type = ".md")
 
 # Create table attributes template (required when data tables are present)
-# function is not compatible with parquet file format. Create template and replicated for 
-# each data table/file
+# function is not compatible with parquet file format. Created helper functions 
+# to replicate this functionality for parquet files.
 # EMLassemblyline::template_table_attributes(
 #   path = path_templates,
 #   data.path = file.path(path_data, "reference_tables"),
 #   data.table = c("ARTIS_v1.2_FAO_reference_baci_trade.csv"))
 
-path_consump <- file.path(path_data, "consumption")
-ds_consump <- arrow::open_dataset(path_consump)
+# testing to figure out custom_units.txt generation behavior for multiple or single files
+EMLassemblyline::template_table_attributes(
+  path = path_templates,
+  data.path = file.path(path_data, "reference_tables")#,
+  #data.table = c("ARTIS_v1.2_FAO_reference_hs6.csv")
+)
+# looks like it writes a single custom_units.txt for 6 reference tables
 
-source("./functions/eml_helper_functions.R")
 
 # gather vector of files to document
 # all reference tables, a sinlge represenative trade and consumption file
@@ -102,12 +108,16 @@ purrr::walk(my_data_tables, \(file_path) {
 
 # edit values manually in spreadsheet
 
+# view standard unit descriptions
+view_unit_dictionary()
+
 # Create categorical variables template (required when attributes templates
 # contains variables with a "categorical" class)
 
 EMLassemblyline::template_categorical_variables(
   path = path_templates, 
-  data.path = path_data)
+  data.path = file.path(path_data, "reference_tables")
+)
 
 # Create geographic coverage (required when more than one geographic location
 # is to be reported in the metadata).
