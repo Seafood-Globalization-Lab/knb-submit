@@ -45,7 +45,7 @@ ref_dir <- file.path(output_dir, "KNB_reference_tables_raw")
 ref_outdir <- file.path(output_dir, "KNB", "reference_tables")
 
 #single_file <- "~/Documents/UW-SAFS/ARTIS/data/outputs_1.2.0_SAU_2025-11-14/KNB/datasets/ARTIS_v1.2.0_consumption_SAU_mid_all_HS_yrs_2025-12-01.parquet"
-single_file <- "~/Documents/UW-SAFS/ARTIS/data/outputs_2.0_FAO_2025-09-11/outputs_combined/ARTIS_v2.0_trade_FAO_mid_all_HS_yrs_2025-09-12.parquet"
+#single_file <- "~/Documents/UW-SAFS/ARTIS/data/outputs_2.0_FAO_2025-09-11/outputs_combined/ARTIS_v2.0_trade_FAO_mid_all_HS_yrs_2025-09-12.parquet"
 
 
 # Convert ARTIS Files to Parquet ----------------------------------------
@@ -148,7 +148,7 @@ foreach(
         consumer_iso3c,
         consumption_type = consumption_source,
         sciname,
-        sciname_hs_modified,
+        sciname_hs6_modified = sciname_hs_modified,
         habitat,
         method,
         end_use,
@@ -555,3 +555,4 @@ print(data.frame(column = names(distinct_match), distinct_values_match = distinc
 # 2.0 conventions --------------------------------------------------------
 
 ds_2.0 <- open_dataset("~/Documents/UW-SAFS/ARTIS/data/outputs_2.1.1_SAU_2025-10-28/outputs_combined/ARTIS_2.1.1_trade_SAU_mid_all_HS_yrs_2025-10-31.parquet")
+
