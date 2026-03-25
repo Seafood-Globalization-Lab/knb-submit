@@ -1,7 +1,0 @@
-attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
-year		numeric	!Add units here!			
-prod_country_iso3c		categorical				
-sciname		categorical				
-method		categorical				
-habitat		categorical				
-live_weight_t		numeric	!Add units here!			

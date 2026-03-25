@@ -1,5 +1,0 @@
-attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
-country_iso3c		categorical				
-country_name		categorical				
-owid_region		categorical				
-continent		categorical				
