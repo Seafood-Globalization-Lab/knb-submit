@@ -188,7 +188,7 @@ sciname <- fread(file.path(ref_dir, "sciname_metadata.csv"), data.table = FALSE)
   janitor::clean_names() %>% 
   arrange(sciname)
 
-fwrite(sciname, file.path(ref_outdir, glue("{ref_file_pat}_sciname.csv")))
+#fwrite(sciname, file.path(ref_outdir, glue("{ref_file_pat}_sciname.csv")))
 arrow::write_parquet(sciname, file.path(ref_outdir, glue("{ref_file_pat}_sciname.parquet")))
 
 
@@ -210,7 +210,7 @@ baci <- fread(
   ) %>% 
   arrange(hs_version, year)
   
-fwrite(baci, file.path(ref_outdir, glue("{ref_file_pat}_baci_trade.csv")))
+#fwrite(baci, file.path(ref_outdir, glue("{ref_file_pat}_baci_trade.csv")))
 arrow::write_parquet(baci, file.path(ref_outdir, glue("{ref_file_pat}_baci_trade.parquet")))
 
 ## code_max_resolved --------------------------------------------
@@ -237,7 +237,7 @@ code_max <- fread(
   ) %>% 
   arrange(hs_version, sciname)
 
-fwrite(code_max, file.path(ref_outdir, glue("{ref_file_pat}_hs6_taxa_resolution.csv")))
+#fwrite(code_max, file.path(ref_outdir, glue("{ref_file_pat}_hs6_taxa_resolution.csv")))
 arrow::write_parquet(code_max, file.path(ref_outdir, glue("{ref_file_pat}_hs6_taxa_resolution.parquet")))
 
 
@@ -258,7 +258,7 @@ prod <- fread(
   ) %>% 
   arrange(year, prod_country_iso3c)
 
-fwrite(prod, file.path(ref_outdir, glue("{ref_file_pat}_production.csv")))
+#fwrite(prod, file.path(ref_outdir, glue("{ref_file_pat}_production.csv")))
 arrow::write_parquet(prod, file.path(ref_outdir, glue("{ref_file_pat}_production.parquet")))
 
 
@@ -277,7 +277,7 @@ countries <- fread(
   ) %>% 
   arrange(country_iso3c)
 
-fwrite(countries, file.path(ref_outdir, glue("{ref_file_pat}_countries.csv")))
+#fwrite(countries, file.path(ref_outdir, glue("{ref_file_pat}_countries.csv")))
 arrow::write_parquet(countries, file.path(ref_outdir, glue("{ref_file_pat}_countries.parquet")))
 
 
@@ -289,18 +289,29 @@ products <- fread(
   colClasses = list(character = "hs6", character = "parent"),
   data.table = FALSE
 ) %>% 
+  mutate(
+    hs_version = case_match(classification,
+      "H0" ~ "HS92",
+      "H1" ~ "HS96",
+      "H2" ~ "HS02",
+      "H3" ~ "HS07",
+      "H4" ~ "HS12",
+      "H5" ~ "HS17"
+    )
+  ) %>% 
   janitor::clean_names() %>% 
   select(
-    comtrade_classification = classification,
+    hs_version,
     hs6,
     hs6_description = description,
     hs6_parent = parent,
     hs6_presentation = presentation,
-    hs6_state = state
+    hs6_state = state,
+    hs_version_numeric = classification
   ) %>% 
-  arrange(comtrade_classification, hs6)
+  arrange(hs_version, hs6)
 
-fwrite(products, file.path(ref_outdir, glue("{ref_file_pat}_hs6.csv")))
+#fwrite(products, file.path(ref_outdir, glue("{ref_file_pat}_hs6.csv")))
 arrow::write_parquet(products, file.path(ref_outdir, glue("{ref_file_pat}_hs6.parquet")))
 
 
@@ -556,3 +567,5 @@ print(data.frame(column = names(distinct_match), distinct_values_match = distinc
 
 ds_2.0 <- open_dataset("~/Documents/UW-SAFS/ARTIS/data/outputs_2.1.1_SAU_2025-10-28/outputs_combined/ARTIS_2.1.1_trade_SAU_mid_all_HS_yrs_2025-10-31.parquet")
 
+arrow::open_dataset("~/Documents/UW-SAFS/ARTIS/data/outputs_1.2.0_FAO_2025-11-20/KNB/reference_tables/ARTIS_v1.2_FAO_reference_hs6_taxa_resolution.parquet") %>% 
+  schema()

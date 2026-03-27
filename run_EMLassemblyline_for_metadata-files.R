@@ -24,23 +24,30 @@ pak::repo_add(CRAN = "RSPM@2025-10-01")
 pak::pak(c(
   "EDIorg/EMLassemblyline",
   "usethis",
-  "arrow"
+  "arrow",
+  "dplyr",
+  "tools",
+  "stringr"
 ))
 library(EMLassemblyline)
 library(usethis)
 library(arrow)
+library(dplyr)
+library(tools)
+library(stringr)
 
 # set path to pre-released ARTIS dataset locally on AM's machine in 
 # .Renviron file at project level
-#edit_r_environ(scope = c("project"))
+#usethis::edit_r_environ(scope = c("project"))
 artis_files_path <- Sys.getenv("ARTIS_DB_PATH")
 
 # Define paths for your metadata templates, data, and EML
-path_templates <- "./metadata-files"
+path_metadata_dir <- "./metadata-files"
 
+path_templates <- file.path(path_metadata_dir, "metadata_templates")
 # where ARTIS .csv data subset will be writen to
-path_data <- file.path(path_templates, "data_objects")
-path_eml <- file.path(path_templates, "eml")
+path_data <- file.path(path_metadata_dir, "data_objects")
+path_eml <- file.path(path_metadata_dir, "eml")
 
 # load helper functions
 source("./functions/ARTIS_EAL_helper_functions.R")
@@ -49,7 +56,7 @@ source("./functions/ARTIS_EAL_helper_functions.R")
 paths_artis_subset <- get_parquet_data_subset(
   path_data_dir = artis_files_path
 )
-
+# take artis parquet file paths and convert to csv writen in this metadata repo/directory
 convert_artis_to_csv(
   paths_artis_parquet = paths_artis_subset, 
   path_write_csv = path_data)
@@ -63,6 +70,7 @@ convert_artis_to_csv(
 # can rerun - will not overwrite
 
 # Create core templates (required for all data packages)
+# will not overwrite existing files
 
 EMLassemblyline::template_core_metadata(
   path = path_templates,
@@ -71,51 +79,73 @@ EMLassemblyline::template_core_metadata(
 
 # Create table attributes template (required when data tables are present)
 # function is not compatible with parquet file format. 
+# supply vector of names if multiple files
+# will not overwrite existing files
 
 EMLassemblyline::template_table_attributes(
   path = path_templates,
-  data.path = file.path(path_data, "reference_tables"),
-  data.table = c("ARTIS_v1.2_FAO_reference_baci_trade.csv"))
+  data.path = path_data,
+  data.table = list.files(path_data)
+)
 
-# edit values manually in spreadsheet
+# Delete custom_units.txt - automatically generated and not required or used
+file.remove("metadata-files/metadata_templates/custom_units.txt")
 
 # view standard unit descriptions
-view_unit_dictionary()
+#view_unit_dictionary()
+
+# Join ARTIS data defitions to temlplates -----------------------------------------------
+
+
+
+
+
+# Categorical variables --------------------------------------------------
+# 2026-03-25 AM - Can I selectively skip definiting iso3c values - and just define 
+# custom ARTIS categories?
 
 # Create categorical variables template (required when attributes templates
 # contains variables with a "categorical" class)
 
 EMLassemblyline::template_categorical_variables(
   path = path_templates, 
-  data.path = file.path(path_data, "reference_tables")
+  data.path = file.path(path_data)
 )
+
+
+# Geographic coverage  ---------------------------------------------------
+# Not relevant for ARTIS global coverage
 
 # Create geographic coverage (required when more than one geographic location
 # is to be reported in the metadata).
 
-EMLassemblyline::template_geographic_coverage(
-  path = path_templates, 
-  data.path = path_data, 
-  data.table = "", 
-  lat.col = "",
-  lon.col = "",
-  site.col = "")
+# EMLassemblyline::template_geographic_coverage(
+#   path = path_templates, 
+#   data.path = path_data, 
+#   data.table = "", 
+#   lat.col = "",
+#   lon.col = "",
+#   site.col = "")
+
+# Taxonomic coverage -----------------------------------------------------
+# 2026-03-25 AM - not going to deal with this at the moment. Might be helpful for other 
+# ARTIS tasks. Too overwhemling with thousands of taxa
 
 # Create taxonomic coverage template (Not-required. Use this to report 
 # taxonomic entities in the metadata)
 
-remotes::install_github("EDIorg/taxonomyCleanr")
-library(taxonomyCleanr)
+# remotes::install_github("EDIorg/taxonomyCleanr")
+# library(taxonomyCleanr)
 
-taxonomyCleanr::view_taxa_authorities()
+# taxonomyCleanr::view_taxa_authorities()
 
-EMLassemblyline::template_taxonomic_coverage(
-  path = path_templates, 
-  data.path = path_data,
-  taxa.table = "",
-  taxa.col = "",
-  taxa.name.type = "",
-  taxa.authority = 3)
+# EMLassemblyline::template_taxonomic_coverage(
+#   path = path_templates, 
+#   data.path = path_data,
+#   taxa.table = "",
+#   taxa.col = "",
+#   taxa.name.type = "",
+#   taxa.authority = 3)
 
 # Make EML from metadata templates --------------------------------------------
 
