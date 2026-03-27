@@ -210,8 +210,8 @@ baci <- fread(
   ) %>% 
   arrange(hs_version, year)
   
-#fwrite(baci, file.path(ref_outdir, glue("{ref_file_pat}_baci_trade.csv")))
-arrow::write_parquet(baci, file.path(ref_outdir, glue("{ref_file_pat}_baci_trade.parquet")))
+#fwrite(baci, file.path(ref_outdir, glue("{ref_file_pat}_trade_baci.csv")))
+arrow::write_parquet(baci, file.path(ref_outdir, glue("{ref_file_pat}_trade_baci.parquet")))
 
 ## code_max_resolved --------------------------------------------
 
@@ -297,7 +297,7 @@ products <- fread(
       "H3" ~ "HS07",
       "H4" ~ "HS12",
       "H5" ~ "HS17"
-    )
+    ),
   ) %>% 
   janitor::clean_names() %>% 
   select(
@@ -308,6 +308,10 @@ products <- fread(
     hs6_presentation = presentation,
     hs6_state = state,
     hs_version_numeric = classification
+  ) %>% 
+  mutate(
+    hs6_presentation = na_if(hs6_presentation, ""),
+    hs6_state = na_if(hs6_state, "")
   ) %>% 
   arrange(hs_version, hs6)
 

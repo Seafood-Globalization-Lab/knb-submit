@@ -1,0 +1,16 @@
+attributeName	attributeDefinition	class	unit	dateTimeFormatString	missingValueCode	missingValueCodeExplanation
+hs_version	Harmonized System (HS) classification version. Also referred to as the Harmonized Commodity Description and Coding System maintained by the World Customs Organization (WCO) for standardized international identification of traded products and goods. 	categorical				
+year	Year in which the apparent consumption took place	numeric	!Add units here!			
+prod_country_iso3c	"ISO3c code (ISO 3116 standard) for the country that produced the specific product (i.e., fishing nation or aquaculture producer)"	categorical				
+exporter_iso3c	ISO3c code (ISO 3116 standard) for the country that was the final exporter before it arrived at the consuming country	categorical				
+consumer_iso3c	ISO3c code (ISO 3116 standard) code for the country consuming the species/species group	categorical				
+consumption_type	"Categorical variable describing the general sourcing path for an aquatic resource: ""domestic"" - a country produced and consumed the aquatic resource without exporting it;  ""foreign step 1"" - the consuming country imported the aquatic resource directly from the producing country; ""foreign step 2"" - the consuming country imported the aquatic resource from an intermediate exporter."	categorical				
+sciname	Species/species group scientific name	categorical				
+sciname_hs6_modified	The most resolved version of the species/species group name based on the best taxonomic resolution of the underlying HS code that it was traded under	categorical				
+habitat	"Categorical variable describing  the habitat in which species/species group was produced: "" marine"" - the species produced or caught is a marine organism; ""inland"" - the species produced or caught is a freshwater organism; ""unknown"" - the habitat of the species produced or caught is unknown."	categorical				
+method	"Categorical variable defining the method of production: ""aquaculture"" - the organism was produced via aquaculture; ""capture"" - the organism was wild caught; ""unknown"" - the production method of the organism is unknown"	categorical				
+end_use	"Categorical variable describing the final use of the product: ""direct human consumption""; ""fishmeal""; ""other"""	categorical				
+consumption_live_t	"Live weight equivalent, in tonnes, of species/species group being consumed"	numeric	!Add units here!			
+consumption_live_t_capped	"Live weight equivalent, in tonnes, of species/species group being consumed (per capita thresholded at 100 kg)"	numeric	!Add units here!			
+consumption_percap_live_kg	"Live weight equivalent, in kg, of species/species group being consumed per capita"	numeric	!Add units here!			
+consumption_percap_live_kg_capped	"Live weight equivalent, in kg, of species/species group being consumed per capita (per capita thresholded at 100 kg)"	numeric	!Add units here!			

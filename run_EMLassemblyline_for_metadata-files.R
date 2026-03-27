@@ -15,7 +15,7 @@
 # created the template of this script. 
 # template_directories("./", "metadata-files")
 
-# Initialize workspace --------------------------------------------------------
+# Required packages (with version control) --------------------------------------------------------
 
 # Update EMLassemblyline and load
 # use pak to set software repo to Posit package manager and pin a 
@@ -27,7 +27,8 @@ pak::pak(c(
   "arrow",
   "dplyr",
   "tools",
-  "stringr"
+  "stringr",
+  "glue"
 ))
 library(EMLassemblyline)
 library(usethis)
@@ -35,6 +36,10 @@ library(arrow)
 library(dplyr)
 library(tools)
 library(stringr)
+library(glue)
+
+
+# File Paths -------------------------------------------------------------
 
 # set path to pre-released ARTIS dataset locally on AM's machine in 
 # .Renviron file at project level
@@ -49,14 +54,27 @@ path_templates <- file.path(path_metadata_dir, "metadata_templates")
 path_data <- file.path(path_metadata_dir, "data_objects")
 path_eml <- file.path(path_metadata_dir, "eml")
 
-# load helper functions
+
+# Read in ARTIS definitions ----------------------------------------------
+# read in long-lived ARTIS data dictionaries (attribute definitions)
+# Most values will not need updating between release versions unless new columns 
+# are added or names are changed.
+# Open file in a spreadsheet (excel) if edits are needed. 
+
+artis_attr_defs <- read.delim("./artis_data_dictionary_attributes.txt")
+artis_attr_catvars_defs <- read.delim("./artis_data_dictionary_attributes_catvars.txt")
+
+# Load helper functions ----------------------------------------------
 source("./functions/ARTIS_EAL_helper_functions.R")
+
+# Setup .csv ARTIS files for EMLassemblyline ------------------------
 
 # get the filepaths to select representative ARTIS data files
 paths_artis_subset <- get_parquet_data_subset(
   path_data_dir = artis_files_path
 )
 # take artis parquet file paths and convert to csv writen in this metadata repo/directory
+# This WILL write over existing files if the names are the same
 convert_artis_to_csv(
   paths_artis_parquet = paths_artis_subset, 
   path_write_csv = path_data)
@@ -67,10 +85,9 @@ convert_artis_to_csv(
 # They are meant to be a reminder and save you a little time. Remove the 
 # functions and arguments you don't need AND ... don't forget to read the docs! 
 # E.g. ?template_core_metadata
-# can rerun - will not overwrite
 
 # Create core templates (required for all data packages)
-# will not overwrite existing files
+# will NOT OVERWRITE existing files
 
 EMLassemblyline::template_core_metadata(
   path = path_templates,
@@ -96,8 +113,62 @@ file.remove("metadata-files/metadata_templates/custom_units.txt")
 
 # Join ARTIS data defitions to temlplates -----------------------------------------------
 
+# vector of general ARTIS datatable names (without model version info) to use across model releases
+artis_gen_tbl_names <- c(
+  "consumption",
+  "reference_countries",
+  "reference_hs6_taxa_resolution",
+  "reference_hs6",
+  "reference_production",
+  "reference_sciname",
+  "reference_trade_baci",
+  "trade"
+)
 
+# match general names to version specific "attributes_*.txt" files to join 
+# on artis_data_dictionary_attributes.txt values
 
+purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name){
+  
+  # match to the specific attribute file with the general tbl name
+  an_attr_tbl_file <- list.files(
+    path = path_templates,
+    pattern = paste0(a_gen_tbl_name, "\\.txt$")
+  )
+
+  # read in matched file
+  an_attr_tbl <- read.delim(file.path(path_templates, an_attr_tbl_file))
+
+  # remove automatically generated values - keep attributeName column
+  an_attr_tbl <- an_attr_tbl[1]
+
+  # join ARTIS attribute definitions onto matched attribute file.
+  # remove datatable_general_name column before join.
+  artis_filter_defs <- artis_attr_defs %>% 
+    filter(datatable_general_name == a_gen_tbl_name) %>% 
+    select(-c(datatable_general_name))
+
+  an_attr_tbl <- an_attr_tbl %>% 
+    left_join(
+      artis_filter_defs,
+      by = c("attributeName")) %>% 
+    # ensure no extra NA values are introduced
+    mutate(missingValueCodeExplanation = "")
+  
+  # write out updated attribute .txt file
+  write.table(
+    an_attr_tbl,
+    file = list.files(
+      path = path_templates,
+      pattern = paste0(a_gen_tbl_name, "\\.txt$"),
+      full.names = TRUE),
+    sep = "\t",
+    row.names = FALSE,
+    quote = FALSE
+  )
+  message(glue("Updated `{an_attr_tbl_file}` with ARTIS attribute definitions"))
+}
+) # end of purrr::walk()
 
 
 # Categorical variables --------------------------------------------------
@@ -112,6 +183,43 @@ EMLassemblyline::template_categorical_variables(
   data.path = file.path(path_data)
 )
 
+# join ARTIS definitions to templated categorical variable definitions
+purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
+  
+  # match to the specific catvars file with the general tbl name
+  an_catvars_tbl_file <- list.files(
+    path = path_templates,
+    pattern = paste0("catvars_.*", a_gen_tbl_name, "\\.txt$")
+  )
+  
+  # skip if no catvars file found for this table
+  if (length(an_catvars_tbl_file) == 0) {
+    message(glue("No catvars file found for `{a_gen_tbl_name}` - skipping"))
+    return(invisible(NULL))
+  }
+  
+  # filter catvars definitions to this table, drop the general name column
+  artis_filter_catvars <- artis_attr_catvars_defs |>
+    filter(datatable_general_name == a_gen_tbl_name) |>
+    select(-datatable_general_name)
+  
+  # skip if no definitions exist for this table
+  if (nrow(artis_filter_catvars) == 0) {
+    message(glue("No catvars definitions found for `{a_gen_tbl_name}` - skipping"))
+    return(invisible(NULL))
+  }
+  
+  # write out, replacing all automatically generated values
+  write.table(
+    artis_filter_catvars,
+    file = file.path(path_templates, an_catvars_tbl_file),
+    sep = "\t",
+    row.names = FALSE,
+    quote = FALSE,
+    na = ""
+  )
+  message(glue("Updated `{an_catvars_tbl_file}` with ARTIS catvars definitions"))
+})
 
 # Geographic coverage  ---------------------------------------------------
 # Not relevant for ARTIS global coverage

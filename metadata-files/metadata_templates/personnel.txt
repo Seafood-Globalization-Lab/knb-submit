@@ -1,0 +1,7 @@
+givenName	middleInitial	surName	organizationName	electronicMailAddress	userId	role	projectTitle	fundingAgency	fundingNumber
+Jessica		Gephart	University of Washington	gephart@uw.edu	https://orcid.org/0000-0001-6836-9291	principalInvestigator	Aquatic Resource Trade in Species (ARTIS)	National Science Foundation	HNDS-I #2504715 (formerly #2121238)
+Jessica		Gephart	University of Washington	gephart@uw.edu	https://orcid.org/0000-0001-6836-9291	creator	Aquatic Resource Trade in Species (ARTIS)		
+Jessica		Gephart	University of Washington	gephart@uw.edu	https://orcid.org/0000-0001-6836-9291	pointOfContact	Aquatic Resource Trade in Species (ARTIS)		
+Althea		Marks	University of Washington	amarks1@uw.edu	https://orcid.org/0000-0002-9370-9128	creator	Aquatic Resource Trade in Species (ARTIS)		
+Althea		Marks	University of Washington	amarks1@uw.edu	https://orcid.org/0000-0002-9370-9128	custodianSteward	Aquatic Resource Trade in Species (ARTIS)		
+Althea		Marks	University of Washington	amarks1@uw.edu	https://orcid.org/0000-0002-9370-9128	metadataProvidereator	Aquatic Resource Trade in Species (ARTIS)		
