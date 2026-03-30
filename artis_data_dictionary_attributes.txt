@@ -67,9 +67,9 @@ trade	year	Year in which the trade took place	Date		YYYY	NA
 trade	prod_country_iso3c	"The country that produced the specific product (i.e., fishing nation or aquaculture producer) specified by ISO 3166-1 alpha-3 code (defined in ISO 3116-1 Codes for the representation of names of countries and their subdivisions) "	character			NA	
 trade	exporter_iso3c	The direct exporter country specified by ISO 3166-1 alpha-3 code (defined in ISO 3116-1 Codes for the representation of names of countries and their subdivisions) 	character			NA	
 trade	importer_iso3c	The direct importer country specified by ISO 3166-1 alpha-3 code (defined in ISO 3116-1 Codes for the representation of names of countries and their subdivisions) 	character			NA	
-trade	export_type	Identifies the origin of the exported product	categorical			NA	
+trade	export_type	"Identifies the origin of the exported product, distinguishing whether it was produced domestically or re-exported after being imported from another country."	categorical			NA	
 trade	hs6	"The six digit Harmonized System (HS) code classifying traded products. Only HS codes in section one ""Live Animals; Animal Products"". The first two digits of the code are the chapter; the second two digits are the position of the heading within the chapter; the last two digits are the subheading in the heading."	character			NA	
-trade	sciname	Species/species group scientific name	categorical			NA	
+trade	sciname	Species/species group scientific name	character			NA	
 trade	habitat	The aquatic environment in which the species/species group was produced.	categorical			NA	
 trade	method	The production method used to obtain the species/species group.	categorical			NA	
 trade	product_weight_t	The weight of the traded product in its reported form	numeric	tonne		NA	

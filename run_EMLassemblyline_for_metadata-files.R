@@ -187,13 +187,13 @@ EMLassemblyline::template_categorical_variables(
 purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
   
   # match to the specific catvars file with the general tbl name
-  an_catvars_tbl_file <- list.files(
+  a_catvars_file <- list.files(
     path = path_templates,
     pattern = paste0("catvars_.*", a_gen_tbl_name, "\\.txt$")
   )
   
   # skip if no catvars file found for this table
-  if (length(an_catvars_tbl_file) == 0) {
+  if (length(a_catvars_file) == 0) {
     message(glue("No catvars file found for `{a_gen_tbl_name}` - skipping"))
     return(invisible(NULL))
   }
@@ -203,22 +203,29 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
     filter(datatable_general_name == a_gen_tbl_name) |>
     select(-datatable_general_name)
   
-  # skip if no definitions exist for this table
-  if (nrow(artis_filter_catvars) == 0) {
-    message(glue("No catvars definitions found for `{a_gen_tbl_name}` - skipping"))
-    return(invisible(NULL))
-  }
+  # # skip if no definitions exist for this table
+  # if (nrow(artis_filter_catvars) == 0) {
+  #   message(glue("No catvars definitions found for `{a_gen_tbl_name}` - skipping"))
+  #   return(invisible(NULL))
+  # }
+  a_catvar_tbl <- read.delim(file.path(path_templates, a_catvars_file))
+  
+  a_catvar_tbl <- a_catvar_tbl %>% 
+    select(-definition) %>% 
+    left_join(
+      artis_filter_catvars,
+      by = c("attributeName", "code"))
   
   # write out, replacing all automatically generated values
   write.table(
-    artis_filter_catvars,
-    file = file.path(path_templates, an_catvars_tbl_file),
+    a_catvar_tbl,
+    file = file.path(path_templates, a_catvars_file),
     sep = "\t",
     row.names = FALSE,
     quote = FALSE,
     na = ""
   )
-  message(glue("Updated `{an_catvars_tbl_file}` with ARTIS catvars definitions"))
+  message(glue("Updated `{a_catvars_file}` with ARTIS catvars definitions"))
 })
 
 # Geographic coverage  ---------------------------------------------------
