@@ -1,0 +1,6 @@
+attributeName	code	definition
+hs_version	HS02	HS version effective from 2002
+hs_version	HS07	HS version effective from 2007
+hs_version	HS12	HS version effective from 2012
+hs_version	HS17	HS version effective from 2017
+hs_version	HS96	HS version effective from 1996

@@ -8,19 +8,9 @@ consumption	end_use	other	"Product is not intended for direct human consumption 
 consumption	habitat	inland	"Species originating from freshwater environments (e.g., rivers, lakes, and ponds)"
 consumption	habitat	marine	"Species originating from saltwater environments - includes brackish environments (e.g., oceans and seas)"
 consumption	habitat	unknown	Habitat not determined or not recorded
-consumption	hs_version	HS02	HS version effective from 2002
-consumption	hs_version	HS07	HS version effective from 2007
-consumption	hs_version	HS12	HS version effective from 2012
-consumption	hs_version	HS17	HS version effective from 2017
-consumption	hs_version	HS96	HS version effective from 1996
 consumption	method	aquaculture	Farmed through controlled cultivation of aquatic organisms
 consumption	method	capture	Wild-caught through fishing activities
 consumption	method	unknown	Production method not recorded
-reference_hs6_taxa_resolution	hs_version	HS02	HS version effective from 2002
-reference_hs6_taxa_resolution	hs_version	HS07	HS version effective from 2007
-reference_hs6_taxa_resolution	hs_version	HS12	HS version effective from 2012
-reference_hs6_taxa_resolution	hs_version	HS17	HS version effective from 2017
-reference_hs6_taxa_resolution	hs_version	HS96	HS version effective from 1996
 reference_hs6_taxa_resolution	match_category	NEC_by_taxa_match	"The hs6 is a ""not elsewhere classified"" (NEC) code that nonetheless carries some taxonomic information in its description (e.g., a genus or family). Taxa are matched to it using that classification information via match_by_taxon(), but only after more specific non-NEC hs6s within the same 4-digit parent group have claimed their matches first. Assigned in: match_by_taxon(), called from match_hs_to_taxa()"
 reference_hs6_taxa_resolution	match_category	NEC_match	"The hs6 is a true NEC catch-all code with no useful taxonomic information in its description. All taxa in the relevant commodity group not already claimed by more specific hs6s in the same parent group are assigned here. match_NEC_taxa() handles this for parent groups where possible_prod_taxa is not filtered between codes (e.g., 0307, 0308, 1604, 1605); inline rbind logic handles it for groups where filtering is used (e.g., 0301–0306). Assigned in: match_hs_to_taxa() (inline) and match_NEC_taxa()"
 reference_hs6_taxa_resolution	match_category	aquarium_trade_match	"The hs6 pertains to ornamental/aquarium fish (HS heading 0301). Taxa are matched based on aquarium trade status (Aquarium column values of ""commercial"", ""highly commercial"", or ""public aquariums"") and habitat (freshwater vs. marine/brackish), not taxonomic description text. Assigned in: match_hs_to_taxa() (special cases block, Special_Treatment == ""ornamental"")"
@@ -28,6 +18,7 @@ reference_hs6_taxa_resolution	match_category	broad_commodity_match	"Applied to s
 reference_hs6_taxa_resolution	match_category	broad_taxa_match	"Applied to production taxa reported at a coarse taxonomic level (order or above: e.g., Osteichthyes, Clupeiformes, Bivalvia) that cannot be resolved to a specific hs6 via the standard matching logic. These taxa are matched broadly to all hs6s whose descriptions reference the relevant taxonomic group (e.g., Clupeiformes _ any hs6 mentioning herring, anchovy, or sardine). Also applied via broad_matches to any higher-level taxon (genus through kingdom) found in prod_taxa_classification that was not already matched directly. Assigned in: match_hs_to_taxa() (addendum block at the end of the function)"
 reference_hs6_taxa_resolution	match_category	explicit_taxa_match	"The hs6 was matched to a taxon by directly identifying the taxon's scientific name (species, genus, family, order, or class) in the hs6 description text, or via common name where scientific classification lacks sufficient resolution (e.g., shrimps/crabs via match_by_common_name()). For FMFO codes, species flagged as primary fishmeal species (primary_fishmeal == 1) are also upgraded to this category. This is the most specific and reliable match type. Assigned in: match_by_taxon(), called from match_hs_to_taxa(). "
 reference_hs6_taxa_resolution	match_category	fmfo_match	"The hs6 pertains to fishmeal and fish oil products (HS heading 2301 or 1504). All taxa on the dedicated fmfo_species_list are initially assigned this category, then species flagged as primary_fishmeal == 1 are immediately upgraded to explicit_taxa_match via a case_when() mutate in the same block. Assigned in: match_hs_to_taxa() (special cases block, Special_Treatment == ""fmfo"")"
+reference_hs6	hs6_presentation		blank when hs6 is a heading or aggregate code
 reference_hs6	hs6_presentation	fats and oils	"Lipid extracts rendered or pressed from aquatic animals, including fish liver oils and other fish oils"
 reference_hs6	hs6_presentation	fillet	"Flesh cut from the sides of the animal, typically boneless"
 reference_hs6	hs6_presentation	"flours, meals, pellets"	"Highly processed solid forms, typically ground or compressed, fit or unfit for human consumption (e.g., fishmeal, feed pellets)"
@@ -36,43 +27,29 @@ reference_hs6	hs6_presentation	"non-fish, non-fmp form"	"Whole or portioned crus
 reference_hs6	hs6_presentation	other body parts	"Non-flesh edible anatomical components not classified elsewhere, including shark fins, fish heads, tails, and maws"
 reference_hs6	hs6_presentation	other meat	"Flesh-based portions that do not qualify as fillets (e.g., minced fish meat and other fish meat not elsewhere classified)"
 reference_hs6	hs6_presentation	whole	"Complete, intact animal or product with no anatomical separation"
+reference_hs6	hs6_state		blank when hs6 is a heading or aggregate code
 reference_hs6	hs6_state	fresh	Minimally processed and not frozen or preserved; typically fresh or chilled with a short shelf life
 reference_hs6	hs6_state	frozen	"Preserved by freezing, whether or not previously cooked"
 reference_hs6	hs6_state	live	Animal is alive at the time of trade
 reference_hs6	hs6_state	not for humans	"Product is derived from aquatic animals but is unfit or not intended for human consumption, destined for industrial or feed use"
 reference_hs6	hs6_state	preserved	"Treated by non-freezing preservation methods including drying, salting, brining, or smoking, whether or not cooked before or during the smoking process"
 reference_hs6	hs6_state	reduced	"Processed into extracted fats, oils, or their fractions, whether or not refined, but not chemically modified"
-reference_hs6	hs_version	HS02	HS version effective from 2002
-reference_hs6	hs_version	HS07	HS version effective from 2007
-reference_hs6	hs_version	HS12	HS version effective from 2012
-reference_hs6	hs_version	HS17	HS version effective from 2017
-reference_hs6	hs_version	HS92	HS version effective from 1992
-reference_hs6	hs_version	HS96	HS version effective from 1996
 reference_production	habitat	inland	"Species originating from freshwater environments (e.g., rivers, lakes, and ponds)"
 reference_production	habitat	marine	"Species originating from saltwater environments - includes brackish environments (e.g., oceans and seas)"
 reference_production	method	aquaculture	Farmed through controlled cultivation of aquatic organisms
 reference_production	method	capture	Wild-caught through fishing activities
+reference_sciname	aquarium		Blank or NA values in the Aquarium column indicate that FishBase or SeaLifeBase has no recorded aquarium trade status for that taxon
 reference_sciname	aquarium	commercial	Regularly traded as an aquarium species in the commercial ornamental fish market
 reference_sciname	aquarium	highly commercial	" Widely and frequently traded as an aquarium species, representing a major segment of the ornamental fish trade"
 reference_sciname	aquarium	never/rarely	Not known to be traded or kept in aquariums
 reference_sciname	aquarium	potential	Not currently traded as an aquarium species but considered to have potential for aquarium use
 reference_sciname	aquarium	public aquariums	Kept in public aquariums but not commonly traded in the private aquarium market
-reference_trade_baci	hs_version	HS02	HS version effective from 2002
-reference_trade_baci	hs_version	HS07	HS version effective from 2007
-reference_trade_baci	hs_version	HS12	HS version effective from 2012
-reference_trade_baci	hs_version	HS17	HS version effective from 2017
-reference_trade_baci	hs_version	HS96	HS version effective from 1996
 trade	export_type	domestic	The product was produced and exported from the same country (domestic export)
 trade	export_type	error	An export that cannot be explained by domestic or foreign export records nor production records
 trade	export_type	foreign	"The product was imported from one country and subsequently re-exported to another country, or back to the original exporting country (re-export)"
 trade	habitat	inland	"Species originating from freshwater environments (e.g., rivers, lakes, and ponds)"
 trade	habitat	marine	"Species originating from saltwater environments - includes brackish environments (e.g., oceans and seas)"
 trade	habitat	unknown	Habitat not determined or not recorded
-trade	hs_version	HS02	HS version effective from 2002
-trade	hs_version	HS07	HS version effective from 2007
-trade	hs_version	HS12	HS version effective from 2012
-trade	hs_version	HS17	HS version effective from 2017
-trade	hs_version	HS96	HS version effective from 1996
 trade	method	aquaculture	Farmed through controlled cultivation of aquatic organisms
 trade	method	capture	Wild-caught through fishing activities
 trade	method	unknown	Production method not recorded
