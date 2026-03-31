@@ -61,8 +61,9 @@ path_eml <- file.path(path_metadata_dir, "eml")
 # are added or names are changed.
 # Open file in a spreadsheet (excel) if edits are needed. 
 
-artis_attr_defs <- read.delim("./artis_data_dictionary_attributes.txt")
-artis_attr_catvars_defs <- read.delim("./artis_data_dictionary_attributes_catvars.txt")
+artis_attr_defs <- read.delim("./metadata-files/artis_data_dictionary_attributes.txt")
+artis_attr_catvars_defs <- read.delim("./metadata-files/artis_data_dictionary_attributes_catvars.txt")
+artis_hs_version_defs <- read.delim("./metadata-files/artis_hs_version_dictionary.txt")
 
 # Load helper functions ----------------------------------------------
 source("./functions/ARTIS_EAL_helper_functions.R")
@@ -111,7 +112,7 @@ file.remove("metadata-files/metadata_templates/custom_units.txt")
 # view standard unit descriptions
 #view_unit_dictionary()
 
-# Join ARTIS data defitions to temlplates -----------------------------------------------
+# Join ARTIS data defitions - attribute temlplates -----------------------------------------------
 
 # vector of general ARTIS datatable names (without model version info) to use across model releases
 artis_gen_tbl_names <- c(
@@ -151,9 +152,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name){
   an_attr_tbl <- an_attr_tbl %>% 
     left_join(
       artis_filter_defs,
-      by = c("attributeName")) %>% 
-    # ensure no extra NA values are introduced
-    mutate(missingValueCodeExplanation = "")
+      by = c("attributeName"))
   
   # write out updated attribute .txt file
   write.table(
@@ -171,7 +170,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name){
 ) # end of purrr::walk()
 
 
-# Categorical variables --------------------------------------------------
+# Join ARTIS data defitions - attribute temlplates --------------------------------------------------
 # 2026-03-25 AM - Can I selectively skip definiting iso3c values - and just define 
 # custom ARTIS categories?
 
@@ -215,6 +214,28 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
     left_join(
       artis_filter_catvars,
       by = c("attributeName", "code"))
+  
+  # add artis hs_version definitions if present in the attributeName column
+  if(any(a_catvar_tbl$attributeName %in% c("hs_version"))){
+    
+    a_catvar_tbl <- a_catvar_tbl %>% 
+      bind_rows(artis_hs_version_defs) %>%
+      # coerce logical produced by is.na() to integer - FALSE = 0 TRUE = 1
+      # arrange sorts ascending by default - puts 0 first - values with definitions
+      arrange(attributeName, code, is.na(definition), definition == "") %>%
+      # duplicate hs_version x code combos - keep ones with definition (show up first)
+      distinct(attributeName, code, .keep_all = TRUE) %>%
+      mutate(
+        definition = case_when(
+          attributeName == "hs_version" & code == "HS92" ~ "Harmonized System version 1992",
+          .default = definition
+        )
+      )
+    
+    # NOTE: This intentionally skips the hs_version == "HS92" value in the reference_hs6 table in the join.
+    # This value is filtered out in the ARTIS model run, but AM (2026-03-20) is intentionally choosing 
+    # to manually add this definition in the reference_hs6 table since it will not be maintained in the artis_hs_version_dictionary.txt
+  }
   
   # write out, replacing all automatically generated values
   write.table(
@@ -267,21 +288,33 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
 # Once all your metadata templates are complete call this function to create 
 # the EML.
 
+# FIXIT: These values could pull from ARTIS config file
+
 EMLassemblyline::make_eml(
   path = path_templates,
   data.path = path_data,
   eml.path = path_eml, 
-  dataset.title = "", 
-  temporal.coverage = c("YYYY-MM-DD", "YYYY-MM-DD"), 
-  geographic.description = "", 
-  geographic.coordinates = c("N", "E", "S", "W"), 
-  maintenance.description = "", 
-  data.table = c(""), 
-  data.table.name = c(""),
-  data.table.description = c(""),
-  other.entity = c(""),
-  other.entity.name = c(""),
-  other.entity.description = c(""),
-  user.id = "",
-  user.domain = "", 
-  package.id = "")
+  dataset.title = "Aquatic Resource Trade in Species (ARTIS) 1.2 FAO", 
+  temporal.coverage = c("1996", "2020"), 
+  geographic.description = "Global coverage", 
+  geographic.coordinates = c("90", "180", "-90", "-180"), 
+  maintenance.description = "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available.", 
+  data.table = c(list.files(path_data)), 
+  data.table.name = c(tools::file_path_sans_ext(list.files(path_data))),
+  data.table.description = c(rep("test", 8)),
+  #other.entity = c(""),
+  #other.entity.name = c(""),
+  #other.entity.description = c(""),
+  #user.id = "",
+  #user.domain = "", 
+  package.id = ""
+  )
+
+
+# Post EAL EML corrections -----------------------------------------------
+
+artis_parquet_files <- list.files(
+  "~/Documents/UW-SAFS/ARTIS/data/outputs_1.2.0_FAO_2025-11-20/KNB", 
+  recursive = TRUE
+)
+
