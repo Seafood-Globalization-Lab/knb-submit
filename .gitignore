@@ -59,10 +59,13 @@ README_files/*
 *_files/
 
 # metadata data folder
-metadata-files/data_objects/
+metadata-files/data_objects/*
 
 # automatically generated metadata templates - values pulled from artis_data_dictionaries
 metadata-files/metadata_templates/attributes_*
 metadata-files/metadata_templates/catvars_*
 
 # metadata-files/metadata_templates/ abstract, additonal_info etc contain values to carry over among versions
+
+# EML doc itself
+metadata-files/eml/*
