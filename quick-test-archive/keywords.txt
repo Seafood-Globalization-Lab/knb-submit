@@ -1,9 +1,0 @@
-keyword	keywordThesaurus
-Seafood
-Trade
-Aquatic food
-Globalization
-Supply Chain
-Traceability
-Fisheries
-Aquaculture
