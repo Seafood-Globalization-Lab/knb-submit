@@ -1,18 +1,14 @@
-# This script executes an EMLassemblyline workflow.
+######### ARTIS model EMLassemblyline workflow ##############
+# created: 2026-03-23 by Althea Marks
 
-# created 2026-03-23 by Althea Marks
-
-# This script is intendied to be used once to initialize and set up an 
-# EML assembly line workflow to generate the EML metadata for the release of 
-# ARTIS on KNB data repository. 
-
-# Note - a second script will be used to update future releases of ARTIS.
-# this script serves as documentation of the inital setup. 
+# This script adapts the automatically generated EMLassemblyline (EAL) workflow
+# Run this script to generate the Ecological Metadata Language (EML) metadata
+# documentation that accompanies the ARTIS dataset releases on the KNB data repository. 
 
 # Create worflow template ------------------------------------------------
 
 # create directory structure for data package contents and EMLassemblyline
-# created the template of this script. 
+# created the template of this script. Do not rerun, here for documentation. 
 # template_directories("./", "metadata-files")
 
 # Required packages (with version control) --------------------------------------------------------
@@ -28,7 +24,8 @@ pak::pak(c(
   "dplyr",
   "tools",
   "stringr",
-  "glue"
+  "glue",
+  "readr"
 ))
 library(EMLassemblyline)
 library(usethis)
@@ -37,48 +34,103 @@ library(dplyr)
 library(tools)
 library(stringr)
 library(glue)
+library(readr)
 
+
+
+# Personal script config -------------------------------------------------
+
+clean_up_templates <- "yes"
+convert_parquets <- "no"
 
 # File Paths -------------------------------------------------------------
 
-# set path to pre-released ARTIS dataset locally on AM's machine in 
-# .Renviron file at project level
-#usethis::edit_r_environ(scope = c("project"))
+# set path to pre-released local ARTIS dataset in .Renviron file at project level: 
+# usethis::edit_r_environ(scope = c("project"))
+
+# set latest ARTIS dataset file path
 artis_files_path <- Sys.getenv("ARTIS_DB_PATH")
 
 # Define paths for your metadata templates, data, and EML
 path_metadata_dir <- "./metadata-files"
-
+# where the EAL .txt file templates will go
 path_templates <- file.path(path_metadata_dir, "metadata_templates")
 # where ARTIS .csv data subset will be writen to
 path_data <- file.path(path_metadata_dir, "data_objects")
+# where eml will be written
 path_eml <- file.path(path_metadata_dir, "eml")
 
+
+# Clean up metadata-files/metadata_templates -----------------------------
+
+# running EAL template functions will not overwrite existing files in metadata_templates/
+# But it might error out when artis_dictionary tables are joined to attributes_*.txt and 
+# catvars_*.txt files. Delete templated files if rerunning script. 
+
+#### THIS DELETES FILES
+if (clean_up_templates == "yes") {
+  file.remove(
+    list.files(
+      path_templates,
+      pattern = "^(attributes_|catvars_).*\\.txt$",
+      full.names = TRUE
+    )
+  )
+}
 
 # Read in ARTIS definitions ----------------------------------------------
 # read in long-lived ARTIS data dictionaries (attribute definitions)
 # Most values will not need updating between release versions unless new columns 
 # are added or names are changed.
 # Open file in a spreadsheet (excel) if edits are needed. 
+# WARNING editing and saving in from excel will quitely add Non UTF-8 enocing characters 
+# and mess up the EML validataion. 
 
-artis_attr_defs <- read.delim("./metadata-files/artis_data_dictionary_attributes.txt")
-artis_attr_catvars_defs <- read.delim("./metadata-files/artis_data_dictionary_attributes_catvars.txt")
-artis_hs_version_defs <- read.delim("./metadata-files/artis_hs_version_dictionary.txt")
+# Clean up excel artifacts upon reading in ARTIS dictionaries
+sanitize_encoding <- function(df) {
+  df |> mutate(across(where(is.character), \(x) iconv(x, from = "Windows-1252", to = "UTF-8")))
+}
 
-# Load helper functions ----------------------------------------------
+artis_defs_attr <- readr::read_tsv(
+  "metadata-files/artis_dictionary_tbl_attributes.txt",
+  show_col_types = FALSE,
+  na = "NA"
+) |> sanitize_encoding()
+
+artis_defs_catvars <- readr::read_tsv(
+  "metadata-files/artis_dictionary_tbl_attributes_catvars.txt",
+  show_col_types = FALSE,
+  na = "NA"
+) |> sanitize_encoding()
+
+artis_defs_hs_v <- readr::read_tsv(
+  "metadata-files/artis_dictionary_hs_version.txt",
+  show_col_types = FALSE,
+  na = "NA"
+) |> sanitize_encoding()
+
+artis_defs_tbl <- readr::read_tsv(
+  "metadata-files/artis_dictionary_tbl.txt",
+  show_col_types = FALSE,
+  na = "NA"
+) |> sanitize_encoding()
+
+# Load custom helper functions ----------------------------------------------
 source("./functions/ARTIS_EAL_helper_functions.R")
 
 # Setup .csv ARTIS files for EMLassemblyline ------------------------
 
-# get the filepaths to select representative ARTIS data files
-paths_artis_subset <- get_parquet_data_subset(
-  path_data_dir = artis_files_path
-)
-# take artis parquet file paths and convert to csv writen in this metadata repo/directory
-# This WILL write over existing files if the names are the same
-convert_artis_to_csv(
-  paths_artis_parquet = paths_artis_subset, 
-  path_write_csv = path_data)
+if(convert_parquets == "yes"){
+  # get the filepaths to select representative ARTIS data files
+  paths_artis_subset <- get_parquet_data_subset(
+    path_data_dir = artis_files_path
+  )
+  # take artis parquet file paths and convert to csv writen in this metadata repo/directory
+  # This WILL write over existing files if the names are the same
+  convert_artis_to_csv(
+    paths_artis_parquet = paths_artis_subset, 
+    path_write_csv = path_data)
+}
 
 # Create metadata templates ---------------------------------------------------
 
@@ -145,7 +197,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name){
 
   # join ARTIS attribute definitions onto matched attribute file.
   # remove datatable_general_name column before join.
-  artis_filter_defs <- artis_attr_defs %>% 
+  artis_filter_defs <- artis_defs_attr %>% 
     filter(datatable_general_name == a_gen_tbl_name) %>% 
     select(-c(datatable_general_name))
 
@@ -198,7 +250,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
   }
   
   # filter catvars definitions to this table, drop the general name column
-  artis_filter_catvars <- artis_attr_catvars_defs |>
+  artis_filter_catvars <- artis_defs_catvars |>
     filter(datatable_general_name == a_gen_tbl_name) |>
     select(-datatable_general_name)
   
@@ -219,7 +271,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
   if(any(a_catvar_tbl$attributeName %in% c("hs_version"))){
     
     a_catvar_tbl <- a_catvar_tbl %>% 
-      bind_rows(artis_hs_version_defs) %>%
+      bind_rows(artis_defs_hs_v) %>%
       # coerce logical produced by is.na() to integer - FALSE = 0 TRUE = 1
       # arrange sorts ascending by default - puts 0 first - values with definitions
       arrange(attributeName, code, is.na(definition), definition == "") %>%
@@ -283,6 +335,13 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
 #   taxa.name.type = "",
 #   taxa.authority = 3)
 
+
+# ARTIS datatable definitions  -------------------------------------------
+
+artis_defs_tbl <- artis_defs_tbl %>% 
+  arrange(datatable_general_name) %>% 
+  pull(definition)
+
 # Make EML from metadata templates --------------------------------------------
 
 # Once all your metadata templates are complete call this function to create 
@@ -294,14 +353,14 @@ EMLassemblyline::make_eml(
   path = path_templates,
   data.path = path_data,
   eml.path = path_eml, 
-  dataset.title = "Aquatic Resource Trade in Species (ARTIS) 1.2 FAO", 
+  dataset.title = "Aquatic Resource Trade in Species (ARTIS) v1.2 FAO", 
   temporal.coverage = c("1996", "2020"), 
   geographic.description = "Global coverage", 
   geographic.coordinates = c("90", "180", "-90", "-180"), 
   maintenance.description = "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available.", 
-  data.table = c(list.files(path_data)), 
-  data.table.name = c(tools::file_path_sans_ext(list.files(path_data))),
-  data.table.description = c(rep("test", 8)),
+  data.table = list.files(path_data), 
+  data.table.name = tools::file_path_sans_ext(list.files(path_data)),
+  data.table.description = artis_defs_tbl,
   #other.entity = c(""),
   #other.entity.name = c(""),
   #other.entity.description = c(""),
