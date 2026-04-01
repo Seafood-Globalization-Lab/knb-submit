@@ -33,7 +33,7 @@ FIXIT: Add more instructions about running these scripts and what the specific f
     - Can easily be recreated in the `run_EMLassemblyline_for_metadata-files.R`
 - Keep `.metadata/abstract.md`, `.metadata/additional_info.md`, `.metadata/intellectual_rights.txt`, `.metadata/keywords.txt`, `.metadata/methods.md`, and `.metadata/personnel.txt`.
     - Contain values that should be carried over to next release version. 
-- 
+- `EMLassemblyline` does not work for parquet files. Added workaround in `run_EMLassemblyline_for_metadata-files.R` (`EAL`) to convert a sample of ARTIS KNB files into .csv to run through the `EAL` workflow to generate first valid iteration of the EML doc. Probably need some "post-processing" EML.xml edits to correct things like EML `<physical>` elements. 
 
 ### AM notes about things:
 
@@ -44,3 +44,9 @@ FIXIT: Add more instructions about running these scripts and what the specific f
 ### Post `EMLassemblyline::make_eml()` Fixes
 
 - `<physical>` reads from `.csv` files in `./metadata-files/ data_objects/` - Might need work around to accurately represent `.parquet` files
+
+
+## Claude README Documentation Draft 2026-03-31
+
+
+
