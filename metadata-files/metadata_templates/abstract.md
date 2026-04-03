@@ -4,3 +4,4 @@ At the same time, seafood is now widely recognized as a critical source of nutri
 Thus, social and environmental threats to local seafood production, including environmental extremes, price impacts of market integration, networked risks, and increased availability of processed foods, must be evaluated in the context of global trade. 
 However, our collective understanding of the environmental and human outcomes of food system globalization is limited by a fundamental gap between production and trade data. 
 We bridge this gap in the Aquatic Resource Trade in Species (ARTIS) database by providing the first global estimates of aquatic species trade flows.
+The ARTIS v1.2 FAO database covers global aquatic species trade from 1996 to 2020 across six Harmonized System (HS) versions, providing consumption and trade estimates for 2774 taxa across 194 countries, alongside six reference tables.

@@ -25,7 +25,8 @@ pak::pak(c(
   "tools",
   "stringr",
   "glue",
-  "readr"
+  "readr",
+  "EML"
 ))
 library(EMLassemblyline)
 library(usethis)
@@ -35,8 +36,7 @@ library(tools)
 library(stringr)
 library(glue)
 library(readr)
-
-
+library(EML)
 
 # Personal script config -------------------------------------------------
 
@@ -373,7 +373,143 @@ EMLassemblyline::make_eml(
 # Post EAL EML corrections -----------------------------------------------
 
 artis_parquet_files <- list.files(
-  "~/Documents/UW-SAFS/ARTIS/data/outputs_1.2.0_FAO_2025-11-20/KNB", 
+  artis_files_path, 
   recursive = TRUE
 )
 
+# Post EAL EML corrections -----------------------------------------------
+# The EAL workflow generates EML describing 8 representative .csv files.
+# This section replaces those <dataTable> elements with ones describing
+# the actual 148 parquet files that make up the ARTIS dataset on KNB.
+# Strategy: clone each of the 8 EAL-generated <dataTable> elements,
+# keeping the full <attributeList>, <entityDescription>, and all other
+# metadata intact. Only the <physical>, <entityName>, and <entityDescription>
+# child elements are replaced to reflect each parquet file.
+# Consumption and trade <dataTable> templates are each cloned many times
+# (once per parquet file), while reference table templates are cloned once each.
+
+library(EML)
+
+# Read the EAL-generated EML back in as an R list object
+eml <- EML::read_eml(file.path(path_eml, ".xml"))
+
+# Helper: build a <physical> element describing a parquet file.
+# EML <physical> expects objectName, size, and dataFormat at minimum.
+# Parquet is a binary columnar format - use externallyDefinedFormat 
+# rather than EML's built-in text format descriptors.
+make_parquet_physical <- function(parquet_file, base_path) {
+  full_path  <- file.path(base_path, parquet_file)
+  size_bytes <- file.info(full_path)$size
+
+  list(
+    objectName = basename(parquet_file),
+    size       = list(size = as.character(size_bytes), unit = "bytes"),
+    dataFormat = list(
+      externallyDefinedFormat = list(formatName = "Apache Parquet")
+    )
+  )
+}
+
+# Helper: detect which of the 8 ARTIS table types a parquet file belongs to.
+# This determines which EAL-generated <attributeList> template to reuse.
+# Note: reference_hs6_taxa_resolution must be checked before reference_hs6
+# to avoid the shorter pattern matching both.
+detect_table_type <- function(parquet_file) {
+  dplyr::case_when(
+    grepl("^consumption/",                 parquet_file) ~ "consumption",
+    grepl("^trade/",                       parquet_file) ~ "trade",
+    grepl("reference_countries",           parquet_file) ~ "reference_countries",
+    grepl("reference_hs6_taxa_resolution", parquet_file) ~ "reference_hs6_taxa_resolution",
+    grepl("reference_hs6\\.parquet",       parquet_file) ~ "reference_hs6",
+    grepl("reference_production",          parquet_file) ~ "reference_production",
+    grepl("reference_sciname",             parquet_file) ~ "reference_sciname",
+    grepl("reference_trade_baci",          parquet_file) ~ "reference_trade_baci",
+    .default = NA_character_
+  )
+}
+
+# check that all files are matched to table types
+#table(detect_table_type(artis_parquet_files), useNA = "always")
+
+# Helper: build an <entityDescription> string for a parquet file.
+# For consumption and trade files, append the HS version and year
+# extracted from the filename (e.g. "HS02", "2002").
+# Reference table files have no HS version or year in their filenames,
+# so they receive the base template description unchanged.
+make_entity_description <- function(template_dt, parquet_file) {
+  base_desc  <- template_dt$entityDescription
+  hs_version <- stringr::str_extract(parquet_file, "HS\\d{2}")
+  year       <- stringr::str_extract(parquet_file, "\\d{4}(?=\\.parquet)")
+
+  if (is.na(hs_version) && is.na(year)) {
+    base_desc
+  } else {
+    glue::glue("{base_desc} (This file contains a portion of the dataset HS version: {hs_version}, Year: {year})")
+  }
+}
+
+# Helper: clone a template <dataTable> for a given parquet file.
+# The entire <dataTable> R list object is copied from the EAL-generated template,
+# preserving <attributeList> and all other metadata unchanged.
+# Only <physical>, <entityName>, and <entityDescription> are overwritten
+# to reflect the specific parquet file being described.
+make_parquet_datatable <- function(template_dt, parquet_file, base_path) {
+  dt                   <- template_dt
+  dt$physical          <- make_parquet_physical(parquet_file, base_path)
+  dt$entityName        <- basename(parquet_file)
+  dt$entityDescription <- make_entity_description(template_dt, parquet_file)
+  dt
+}
+
+# Extract the 8 EAL-generated template <dataTable> elements from the EML,
+# keyed by ARTIS table type name for lookup below.
+# Note: reference_hs6 uses the .csv anchor to avoid matching reference_hs6_taxa_resolution.
+orig_datatables <- eml$dataset$dataTable
+
+get_template <- function(name_pattern) {
+  idx <- which(sapply(orig_datatables, \(dt) grepl(name_pattern, dt$entityName)))
+  orig_datatables[[idx]]
+}
+
+templates <- list(
+  consumption                   = get_template("consumption$"),
+  trade                         = get_template("trade$"),
+  reference_countries           = get_template("reference_countries$"),
+  reference_hs6_taxa_resolution = get_template("reference_hs6_taxa_resolution$"),
+  reference_hs6                 = get_template("reference_hs6$"),
+  reference_production          = get_template("reference_production$"),
+  reference_sciname             = get_template("reference_sciname$"),
+  reference_trade_baci          = get_template("reference_trade_baci$")
+)
+
+# Generate a <dataTable> element for each of the 148 parquet files.
+# Each file is matched to its table type, then cloned from the corresponding
+# template with an updated <physical>, <entityName>, and <entityDescription>.
+# Files that fail type detection are dropped with a warning rather than 
+# inserting NULL into the EML list.
+parquet_datatables <- purrr::map(artis_parquet_files, \(f) {
+  table_type <- detect_table_type(f)
+
+  if (is.na(table_type)) {
+    warning(glue::glue("Could not detect table type for: {f}. File was dropped from EML"))
+    return(NULL)
+  }
+
+  make_parquet_datatable(templates[[table_type]], f, artis_files_path)
+}) |>
+  purrr::discard(is.null)
+
+# Replace the 8 representative CSV <dataTable> elements with the 148
+# parquet <dataTable> elements, then write out a new EML file.
+# The original EAL-generated EML is preserved unchanged at "ARTIS_v1.2_FAO.xml".
+eml$dataset$dataTable <- parquet_datatables
+
+eml$dataset$additionalInfo <- "The consumption and trade tables are partitioned into 
+individual parquet files by HS version and year. All consumption files share an identical 
+schema, as do all trade files. The complete consumption and trade datasets are obtained by 
+combining all files of each type."
+
+EML::write_eml(eml, file.path(path_eml, "ARTIS_v1.2_FAO_parquet.xml"))
+
+# validate 
+EML::eml_validate(file.path(path_eml, "ARTIS_v1.2_FAO_parquet.xml"))
