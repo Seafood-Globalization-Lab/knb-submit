@@ -41,6 +41,7 @@ library(EML)
 
 clean_up_templates <- "yes"
 convert_parquets   <- "no"
+final_eml_name <- "ARTIS_v1.2_FAO_parquet.xml"
 
 # File Paths -------------------------------------------------------------
 
@@ -369,7 +370,7 @@ individual parquet files by HS version and year. All consumption files share an 
 schema, as do all trade files. The complete consumption and trade datasets are obtained by
 combining all files of each type."
 
-EML::write_eml(eml, file.path(path_eml, "ARTIS_v1.2_FAO_parquet.xml"))
+EML::write_eml(eml, file.path(path_eml, final_eml_name))
 
 # Validate the final EML
-EML::eml_validate(file.path(path_eml, "ARTIS_v1.2_FAO_parquet.xml"))
+EML::eml_validate(file.path(path_eml, final_eml_name))
