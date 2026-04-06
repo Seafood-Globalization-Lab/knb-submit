@@ -9,7 +9,7 @@ ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinfo
 
 KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories. KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS pipeline uses [`EMLassemblyline`](https://github.com/EDIorg/emlAssemblyLine)
 
-### additional KNB resources
+### Additional KNB resources
  For how to submit data to KNB see the links below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains DataONE and KNB.
 
 - [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/)
@@ -75,7 +75,7 @@ Sys.getenv("ARTIS_DB_PATH")
 
 ## `EMLassemblyline` Workflow
 
-### OVerview
+### Overview
 
 The EML generation workflow has three stages:
 
@@ -83,9 +83,7 @@ The EML generation workflow has three stages:
 2. **Run the main script** — `EMLassemblyline` generates EML for representative `.csv` files; post-processing replaces `.csv` references with the full parquet file collection
 3. **Validate and publish** — run tests, validate EML, upload to KNB
 
-### Step 1: Update Metadata for the New Release
-
-#### Update the script config
+### Update the script config
 
 Open `run_EMLassemblyline_for_metadata-files.R` and update the top config section:
 
@@ -106,14 +104,14 @@ EMLassemblyline::make_eml(
 )
 ```
 
-#### Update `abstract.md`
+### Update `abstract.md`
 
 Open `metadata-files/metadata_templates/abstract.md` in Positron or Rstudio (not Excel) and update the temporal coverage, species counts, or any other release-specific language.
 
 > [!WARNING] 
 > **Do not use special characters, symbols, or formatting.** EML only accepts Unicode plain text: UTF-8. URLs are acceptable. The `run_EMLassemblyline_for_metadata-files.R` script trys to reads in `.txt` safely because excel introduces all kinds of crazy things without the user knowing. LLM generated text may also use non-UTF-8 characters that will introduce EML validation problems. 
 
-#### Update `personnel.txt`
+### Update `personnel.txt`
 
 Open `metadata-files/metadata_templates/personnel.txt` in a spreadsheet editor and verify or update author/contact information.
 
@@ -124,7 +122,7 @@ Key rules for this file:
 - **Valid `role` values** from the EAL documentation: `creator`, `contact`, `PI`, `metadataProvider`. Any other string is also accepted and will appear as an associated party. Note these are not `EML` valid values, EAL has its own set that gets translated in `make_eml()`.
 - If a person has more than one role, duplicate their row with the second role. One row per role.
 
-#### Update data dictionaries (only if columns or tables changed)
+### Update data dictionaries (only if columns or tables changed)
 
 The four data dictionary files in `metadata-files/` are designed to persist across releases. Only update them if:
 
@@ -146,7 +144,7 @@ Valid values for key columns in `artis_dictionary_tbl_attributes.txt`:
 | `dateTimeFormatString` | Required when `class == "Date"`. Use format codes: `YYYY`, `MM`, `DD`, `hh`, `mm`, `ss`. Must be blank for non-Date. |
 | `missingValueCode` | One value per attribute (e.g. `NA`). |
 
-## Step 2: Run the Main Script
+### Run the Main Script
 
 In `run_EMLassemblyline_for_metadata-files.R`, set `convert_parquets <- "yes"` to convert new dataset version. Set to `"no"` if only re-running for same dataset.
 
@@ -170,7 +168,7 @@ The script will:
 
 If validation fails, the error message will point to the invalid section.
 
-## Step 3: Check Dictionaries and Templates
+### Check Dictionaries and Templates
 
 Before publishing, run the dictionary and template checks. These are **not** a substitute for formal EML validation (which runs automatically at the end of the main script) — they are a supplementary check designed specifically for the ARTIS workflow. Because `EMLassemblyline` uses its own set of valid values that differ from raw EML schema values, these tests verify that the long-lived ARTIS data dictionaries stay aligned with what `EMLassemblyline` expects when it reads the generated `attributes_*.txt` and `catvars_*.txt` template files.
 
@@ -192,7 +190,7 @@ The checks confirm:
 
 Fix any failures in the source dictionary files and re-run the main script before proceeding to publish.
 
-## Step 4: Publish to KNB (AM has not check that this is actually correct)
+### Publish to KNB (AM has not check that this is actually correct)
 
 1. Log into [KNB](https://knb.ecoinformatics.org/) with your ORCiD
 2. Work in the **staging environment first** to preview and evaluate your submission before going live
