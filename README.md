@@ -1,20 +1,18 @@
-# Submit ARTIS to data repository
+# Submit ARTIS to KNB Data Repository
 
 ## Purpose
 
--   Long-term stable archive of model inpusts, model, database, and metadata
--   Open-acess distribution point
+-   Long-term stable archive of model inputs, model, database, and metadata
+-   Open-access distribution point for the public and collaborators
 
 ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing to the larger open-science and reproducible science community. ARTIS uses KNB as an access point for anyone to download the [ARTIS model codebase and clean inputs](https://doi.org/10.5063/F1862DXT) and output [ARTIS database](https://doi.org/10.5063/F1CZ35N7)
 
-KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories. KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages which can be created via the website GUI (graphical user interface) or through a series of R packages [rdataone](http://doi.org/10.5063/F1M61H5X) and [arcticdatautils](https://github.com/NCEAS/arcticdatautils/).
+KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories. KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS pipeline uses [`EMLassemblyline`](https://github.com/EDIorg/emlAssemblyLine)
 
-> [!NOTE] 
-> a user will need an [ORCiD](https://orcid.org/) to log into KNB.
+### additional KNB resources
+ For how to submit data to KNB see the links below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains DataONE and KNB.
 
-For additional resources on how to submit data to KNB see the links below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains DataONE and KNB.
-
--   [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/)
+- [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/)
 - [Instructions for the EML assembly line](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=197025)
 
 # Creating EML Metadata for ARTIS Dataset Releases
@@ -72,12 +70,12 @@ Save and restart R. Verify it worked:
 ```r
 Sys.getenv("ARTIS_DB_PATH")
 ```
+> [!NOTE]
+> You will need an [ORCiD](https://orcid.org/) to log into KNB. Create one if you don't have one — it also serves as your author identifier in the metadata.
 
-### KNB account
+## `EMLassemblyline` Workflow
 
-You will need an [ORCiD](https://orcid.org/) to log into KNB. Create one if you don't have one — it also serves as your author identifier in the metadata.
-
-## Workflow Overview
+### OVerview
 
 The EML generation workflow has three stages:
 
@@ -85,9 +83,9 @@ The EML generation workflow has three stages:
 2. **Run the main script** — `EMLassemblyline` generates EML for representative `.csv` files; post-processing replaces `.csv` references with the full parquet file collection
 3. **Validate and publish** — run tests, validate EML, upload to KNB
 
-## Step 1: Update Metadata for the New Release
+### Step 1: Update Metadata for the New Release
 
-### 1a. Update the script config
+#### Update the script config
 
 Open `run_EMLassemblyline_for_metadata-files.R` and update the top config section:
 
@@ -108,14 +106,14 @@ EMLassemblyline::make_eml(
 )
 ```
 
-### 1b. Update `abstract.md`
+#### Update `abstract.md`
 
 Open `metadata-files/metadata_templates/abstract.md` in Positron or Rstudio (not Excel) and update the temporal coverage, species counts, or any other release-specific language.
 
 > [!WARNING] 
 > **Do not use special characters, symbols, or formatting.** EML only accepts Unicode plain text: UTF-8. URLs are acceptable. The `run_EMLassemblyline_for_metadata-files.R` script trys to reads in `.txt` safely because excel introduces all kinds of crazy things without the user knowing. LLM generated text may also use non-UTF-8 characters that will introduce EML validation problems. 
 
-### 1c. Update `personnel.txt`
+#### Update `personnel.txt`
 
 Open `metadata-files/metadata_templates/personnel.txt` in a spreadsheet editor and verify or update author/contact information.
 
@@ -126,7 +124,7 @@ Key rules for this file:
 - **Valid `role` values** from the EAL documentation: `creator`, `contact`, `PI`, `metadataProvider`. Any other string is also accepted and will appear as an associated party. Note these are not `EML` valid values, EAL has its own set that gets translated in `make_eml()`.
 - If a person has more than one role, duplicate their row with the second role. One row per role.
 
-### 1d. Update data dictionaries (only if columns or tables changed)
+#### Update data dictionaries (only if columns or tables changed)
 
 The four data dictionary files in `metadata-files/` are designed to persist across releases. Only update them if:
 
@@ -206,6 +204,3 @@ Fix any failures in the source dictionary files and re-run the main script befor
 8. Click **Upload** (not Evaluate) to go live and receive a DOI
 
 > **Note:** KNB will assign a new package identifier in the production environment — you cannot reuse the staging identifier. Re-run the script one final time with the production identifier before the final upload.
-
-
-
