@@ -41,7 +41,7 @@ library(EML)
 
 clean_up_templates <- "yes"
 convert_parquets   <- "no"
-final_eml_name <- "ARTIS_v1.2_FAO_parquet.xml"
+final_eml_name <- "ARTIS_v1.2_FAO.xml"
 
 # File Paths -------------------------------------------------------------
 

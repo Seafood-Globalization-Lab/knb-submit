@@ -12,8 +12,8 @@ KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, access
 ### Additional KNB resources
  For how to submit data to KNB see the links below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains DataONE and KNB.
 
-- [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/)
-- [Instructions for the EML assembly line](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=197025)
+- [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/) - For creating a data package to submit to KNB and editing of existing EML documentation. 
+- [Instructions for the EML assembly line](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=197025) - Practical instructions for running the `EMLassemblyline` (EAL) workflow to author EML. 
 
 # Creating EML Metadata for ARTIS Dataset Releases
 
@@ -202,3 +202,7 @@ Fix any failures in the source dictionary files and re-run the main script befor
 8. Click **Upload** (not Evaluate) to go live and receive a DOI
 
 > **Note:** KNB will assign a new package identifier in the production environment — you cannot reuse the staging identifier. Re-run the script one final time with the production identifier before the final upload.
+
+## AM KNB Datapackage Notes for README
+
+- Will create new dataset version on KNB each release. Will NOT use versioned releases to update an existing dataset. 
