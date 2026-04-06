@@ -139,7 +139,8 @@ EMLassemblyline::template_core_metadata(
 EMLassemblyline::template_table_attributes(
   path       = path_templates,
   data.path  = path_data,
-  data.table = list.files(path_data)
+  data.table = list.files(path_data,
+  pattern = "\\.csv$")  # add pattern)
 )
 
 # Delete custom_units.txt - automatically generated and not required
@@ -304,6 +305,9 @@ EMLassemblyline::make_eml(
   data.table              = list.files(path_data),
   data.table.name         = tools::file_path_sans_ext(list.files(path_data)),
   data.table.description  = artis_defs_tbl,
+  other.entity            = "07-post-processing-validation_1.2.0_FAO.html",
+  other.entity.name       = "ARTIS v1.2 FAO Data Validation Report",
+  other.entity.description = "Self-contained HTML report summarising data validation checks for the ARTIS v1.2 FAO dataset.",
   package.id              = ""
 )
 

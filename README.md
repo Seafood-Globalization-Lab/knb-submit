@@ -1,6 +1,6 @@
 # Submit ARTIS to KNB Data Repository
 
-## Purpose
+### Purpose
 
 -   Long-term stable archive of model inputs, model, database, and metadata
 -   Open-access distribution point for the public and collaborators
