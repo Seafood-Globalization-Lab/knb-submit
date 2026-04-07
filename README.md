@@ -206,3 +206,12 @@ Fix any failures in the source dictionary files and re-run the main script befor
 ## AM KNB Datapackage Notes for README
 
 - Will create new dataset version on KNB each release. Will NOT use versioned releases to update an existing dataset. 
+- [Instructions to get access token](https://nceas.github.io/datateam-training/training/creating-a-data-package.html#upload-a-package) 
+  - Log into KNB with ORCiD
+  - my profile
+  - settings
+  - Authentication 
+  - Token for DataONE R
+  - Copy
+  - run in console
+- [CRAN dataone pkg vignettes](https://cran.r-project.org/web/packages/dataone/vignettes/v05-upload-data.html)
