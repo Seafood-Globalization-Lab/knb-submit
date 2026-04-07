@@ -189,3 +189,37 @@ get_template <- function(orig_datatables, name_pattern) {
   idx <- which(sapply(orig_datatables, \(dt) grepl(name_pattern, dt$entityName)))
   orig_datatables[[idx]]
 }
+
+# Helper: detect the DataONE/KNB format identifier string for a file based
+# on its extension. Format identifiers are standardized strings used by
+# DataONE to register and index uploaded objects by file type.
+#
+# Supported formats:
+#   - .parquet  "application/x-parquet"  community-adopted MIME type for
+#                                        Apache Parquet; recognized by KNB/DataONE
+#   - .html     "text/html"              standard MIME type for HTML files
+#   - .csv      "text/csv"               standard MIME type for CSV files
+#   - .xml      "https://eml.ecoinformatics.org/eml-2.2.0"
+#                                        EML schema URI used by DataONE to
+#                                        identify EML metadata documents
+#
+# Throws an informative error for unrecognized file extensions rather than
+# silently uploading with a generic format string DataONE won't recognize.
+# To add a new file type, add a named entry to known_formats using a valid
+# DataONE format identifier: https://cn.dataone.org/cn/v2/formats
+get_format <- function(file_path) {
+  ext <- tools::file_ext(file_path)
+  
+  known_formats <- c(
+    "parquet" = "application/x-parquet",
+    "html"    = "text/html",
+    "csv"     = "text/csv",
+    "xml"     = "https://eml.ecoinformatics.org/eml-2.2.0"
+  )
+  
+  if (!ext %in% names(known_formats)) {
+    stop(glue::glue("Unrecognized file format: .{ext} for file {basename(file_path)}"))
+  }
+  
+  known_formats[[ext]]
+}
