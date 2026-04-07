@@ -41,7 +41,7 @@ library(EML)
 
 clean_up_templates <- "yes"
 convert_parquets   <- "no"
-final_eml_name <- "ARTIS_v1.2_FAO.xml"
+final_eml_name <- "ARTIS_v1.2_FAO_EML.xml"
 
 # File Paths -------------------------------------------------------------
 
@@ -302,8 +302,9 @@ EMLassemblyline::make_eml(
   geographic.description  = "Global coverage",
   geographic.coordinates  = c("90", "180", "-90", "-180"),
   maintenance.description = "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available.",
-  data.table              = list.files(path_data),
-  data.table.name         = tools::file_path_sans_ext(list.files(path_data)),
+  # exclude html validation file in path_data
+  data.table              = list.files(path_data, pattern = "\\.csv$"),
+  data.table.name         = tools::file_path_sans_ext(list.files(path_data, pattern = "\\.csv$")),
   data.table.description  = artis_defs_tbl,
   other.entity            = "07-post-processing-validation_1.2.0_FAO.html",
   other.entity.name       = "ARTIS v1.2 FAO Data Validation Report",
@@ -323,7 +324,11 @@ EMLassemblyline::make_eml(
 # are cloned once each.
 
 # get all parquet file paths relative to artis_files_path
-artis_parquet_files <- list.files(artis_files_path, recursive = TRUE)
+artis_parquet_files <- list.files(
+  artis_files_path, 
+  recursive = TRUE,
+  pattern = "\\.csv$"
+)
 
 # Read the EAL-generated EML back in as an R list object
 eml <- EML::read_eml(file.path(path_eml, ".xml"))
@@ -332,17 +337,17 @@ eml <- EML::read_eml(file.path(path_eml, ".xml"))
 # keyed by ARTIS table type name for lookup below.
 # End-of-string anchors ($) prevent partial matches
 # (e.g. "trade$" does not match "reference_trade_baci").
-orig_datatables <- eml$dataset$dataTable
+dataTable_csv <- eml$dataset$dataTable
 
 templates <- list(
-  consumption                   = get_template(orig_datatables, "consumption$"),
-  trade                         = get_template(orig_datatables, "trade$"),
-  reference_countries           = get_template(orig_datatables, "reference_countries$"),
-  reference_hs6_taxa_resolution = get_template(orig_datatables, "reference_hs6_taxa_resolution$"),
-  reference_hs6                 = get_template(orig_datatables, "reference_hs6$"),
-  reference_production          = get_template(orig_datatables, "reference_production$"),
-  reference_sciname             = get_template(orig_datatables, "reference_sciname$"),
-  reference_trade_baci          = get_template(orig_datatables, "reference_trade_baci$")
+  consumption                   = get_template(dataTable_csv, "consumption$"),
+  trade                         = get_template(dataTable_csv, "trade$"),
+  reference_countries           = get_template(dataTable_csv, "reference_countries$"),
+  reference_hs6_taxa_resolution = get_template(dataTable_csv, "reference_hs6_taxa_resolution$"),
+  reference_hs6                 = get_template(dataTable_csv, "reference_hs6$"),
+  reference_production          = get_template(dataTable_csv, "reference_production$"),
+  reference_sciname             = get_template(dataTable_csv, "reference_sciname$"),
+  reference_trade_baci          = get_template(dataTable_csv, "reference_trade_baci$")
 )
 
 # Generate a cloned <dataTable> element for each of the 148 parquet files.
