@@ -21,14 +21,14 @@ library(EML)
 
 # Set ARTIS data path ----------------------------------------------------
 
-#+
+#
 path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
 path_artis_eml <- file.path("metadata-files", "eml", "ARTIS_v1.2_FAO_EML.xml")
 source("./functions/ARTIS_EAL_helper_functions.R")
 
 # Set DataOne paths and config ------------------------------------------------------
 
-#+ Set DataONE Coordinating Node
+# Set DataONE Coordinating Node
 cn <- CNode("STAGING")
 # Get reference to node based on its identifier
 mn <- getMNode(cn,'urn:node:mnTestKNB')
@@ -37,7 +37,7 @@ d1c_test <- D1Client(cn,mn)
 
 # Build data package -----------------------------------------
 
-#+ create a new data package
+# create a new data package
 dp <- new("DataPackage")
 
 # create a new DataObject for the metadata
@@ -83,7 +83,7 @@ format_summary <- function(format_table) {
   )
 }
 
-if (length(dp@objects) == expected_members && all(dp_formats == artis_formats)) {
+if (all(dp_formats == artis_formats)) {
   message(glue::glue(
     "Data package check passed: {length(dp@objects)} total members\n",
     "  artis_data_files: {format_summary(artis_formats)}\n",
@@ -109,16 +109,18 @@ dp_data_count <- length(dp@objects) - 1L
 
 if (dp_data_count == eml_data_count) {
   message(glue::glue(
-    "EML and data package are in sync: ",
-    "{eml_data_count} EML entities ({length(eml_for_check$dataset$dataTable)} dataTables + ",
-    "{length(eml_for_check$dataset$otherEntity)} otherEntities) ",
-    "matches {dp_data_count} data objects in the data package."
+    "EML and data package are in sync: {eml_data_count} total entities\n",
+    "  EML entities:     {length(eml_for_check$dataset$dataTable)} dataTables + ",
+    "{length(eml_for_check$dataset$otherEntity$entityName)} otherEntities\n",
+    "  dp@objects:       {dp_data_count} data objects (excluding EML metadata object)"
   ))
 } else {
   stop(glue::glue(
-    "EML and data package are out of sync: ",
-    "EML describes {eml_data_count} entities but data package contains {dp_data_count} data objects.\n",
-    "Check that all parquet files and other entities were added to both the EML and the data package."
+    "EML and data package are out of sync:\n",
+    "  EML entities:     {length(eml_for_check$dataset$dataTable)} dataTables + ",
+    "{length(eml_for_check$dataset$otherEntity$entityName)} otherEntities = {eml_data_count} total\n",
+    "  dp@objects:       {dp_data_count} data objects (excluding EML metadata object)\n",
+    "  Check that all parquet files and other entities were added to both the EML and the data package."
   ))
 }
 
