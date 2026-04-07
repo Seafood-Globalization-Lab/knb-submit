@@ -48,7 +48,7 @@ final_eml_name <- "ARTIS_v1.2_FAO_EML.xml"
 # Set path to pre-released local ARTIS dataset in .Renviron file at project level:
 # usethis::edit_r_environ(scope = c("project"))
 
-artis_files_path  <- Sys.getenv("ARTIS_DB_PATH")
+path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
 path_metadata_dir <- "./metadata-files"
 path_templates    <- file.path(path_metadata_dir, "metadata_templates")
 path_data         <- file.path(path_metadata_dir, "data_objects")
@@ -111,7 +111,7 @@ artis_defs_tbl <- readr::read_tsv(
 if (convert_parquets == "yes") {
   # get filepaths for representative ARTIS data files (one trade, one consumption, all reference)
   paths_artis_subset <- get_parquet_data_subset(
-    path_data_dir = artis_files_path
+    path_data_dir = path_artis_files
   )
   # convert representative parquet files to CSV for EAL template workflow
   # This WILL overwrite existing files if names match
@@ -323,11 +323,11 @@ EMLassemblyline::make_eml(
 # cloned many times (once per parquet file); reference table templates
 # are cloned once each.
 
-# get all parquet file paths relative to artis_files_path
+# get all parquet file paths relative to path_artis_files
 artis_parquet_files <- list.files(
-  artis_files_path, 
+  path_artis_files, 
   recursive = TRUE,
-  pattern = "\\.csv$"
+  pattern = "\\.parquet$"
 )
 
 # Read the EAL-generated EML back in as an R list object
@@ -364,7 +364,7 @@ parquet_datatables <- purrr::map(artis_parquet_files, \(f) {
     return(NULL)
   }
 
-  make_parquet_datatable(templates[[table_type]], f, artis_files_path)
+  make_parquet_datatable(templates[[table_type]], f, path_artis_files)
 }) |>
   purrr::discard(is.null)
 
