@@ -2,18 +2,31 @@
 
 ### Purpose
 
--   Long-term stable archive of model inputs, model, database, and metadata
--   Open-access distribution point for the public and collaborators
+- Long-term stable archive of model inputs, model, database, and metadata
+- Open-access distribution point for the public and collaborators
+- Reusable automated creation of EML metadata
+- Reusable automated upload of database and metadata to KNB
 
-ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing to the larger open-science and reproducible science community. ARTIS uses KNB as an access point for anyone to download the [ARTIS model codebase and clean inputs](https://doi.org/10.5063/F1862DXT) and output [ARTIS database](https://doi.org/10.5063/F1CZ35N7)
+ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing to the larger open-science and reproducible science community. ARTIS uses KNB as an access point for anyone to download the ARTIS model codebase and ARTIS database.
 
-KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories. KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS pipeline uses [`EMLassemblyline`](https://github.com/EDIorg/emlAssemblyLine)
+### Workflow Outline for Publishing ARTIS dataset on KNB
 
-### Additional KNB resources
- For how to submit data to KNB see the links below from NCEAS (National Center for Ecological Analysis and Synthesis) who develops and maintains DataONE and KNB.
+- Assume ARTIS database is validated and in cleaned architecture for distribution (done in )
+- Update ARTIS data disctionaries and long-lived documentation (if needed)
+- Generate EML metadata documentation specific to the ARTIS dataset release version 
+- Point to KNB stagging member node
+- Create data package with EML and full ARTIS database
+- Push to stagging 
+
+### Additional KNB Info
+
+KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories and KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS pipeline uses [`EMLassemblyline`](https://github.com/EDIorg/emlAssemblyLine)
 
 - [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/) - For creating a data package to submit to KNB and editing of existing EML documentation. 
 - [Instructions for the EML assembly line](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=197025) - Practical instructions for running the `EMLassemblyline` (EAL) workflow to author EML. 
+- [DataOne R package documentation](https://dataoneorg.r-universe.dev/dataone) Check out the `Vignettes` particularly:
+  - [DataONE Federation](https://dataoneorg.r-universe.dev/articles/dataone/v02-dataone-federation.html) for KNB Authentication Tokens and;
+  - [Uploading Datasets to DataONE](https://dataoneorg.r-universe.dev/articles/dataone/v06-update-package.html) for an outline of the data package upload workflow. 
 
 # Creating EML Metadata for ARTIS Dataset Releases
 
@@ -189,17 +202,6 @@ The checks confirm:
 - All ORCiD `userId` values are formatted as `XXXX-XXXX-XXXX-XXXX`
 
 Fix any failures in the source dictionary files and re-run the main script before proceeding to publish.
-
-### Publish to KNB (AM has not check that this is actually correct)
-
-1. Log into [KNB](https://knb.ecoinformatics.org/) with your ORCiD
-2. Work in the **staging environment first** to preview and evaluate your submission before going live
-3. Reserve a package identifier: **Tools → Reservations → Data Package Identifier Reservations**
-4. Update `package.id` in the `make_eml()` call with the reserved identifier (e.g. `"knb.XXXXX.1"`) and re-run the script to regenerate the EML with the correct package ID
-5. Upload: **Tools → Evaluate/Upload Data Packages** → select your EML file → manually upload parquet files → click **Evaluate**
-6. Review the evaluation report — you can publish with warnings but not with errors
-7. Once clean, repeat in the **production environment** with a new reserved identifier
-8. Click **Upload** (not Evaluate) to go live and receive a DOI
 
 > **Note:** KNB will assign a new package identifier in the production environment — you cannot reuse the staging identifier. Re-run the script one final time with the production identifier before the final upload.
 

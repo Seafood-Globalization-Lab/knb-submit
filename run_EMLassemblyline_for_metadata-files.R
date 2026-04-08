@@ -297,7 +297,7 @@ EMLassemblyline::make_eml(
   path                    = path_templates,
   data.path               = path_data,
   eml.path                = path_eml,
-  dataset.title           = "Aquatic Resource Trade in Species (ARTIS) v1.2 FAO",
+  dataset.title           = "Aquatic Resource Trade in Species (ARTIS) v1.2 FAO 1996-2020",
   temporal.coverage       = c("1996", "2020"),
   geographic.description  = "Global coverage",
   geographic.coordinates  = c("90", "180", "-90", "-180"),

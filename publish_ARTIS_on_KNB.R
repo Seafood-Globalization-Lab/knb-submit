@@ -19,16 +19,21 @@ library(purrr)
 library(EML)
 
 
-# Set ARTIS data path ----------------------------------------------------
+# Set ARTIS paths ----------------------------------------------------
 
-#
+# local file path to dataset root directory 
 path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
+# path to EML file generated in this project repo
 path_artis_eml <- file.path("metadata-files", "eml", "ARTIS_v1.2_FAO_EML.xml")
+
+
+# Load my helper functions --------------------------------------------------
+
 source("./functions/ARTIS_EAL_helper_functions.R")
 
-# Set DataOne paths and config ------------------------------------------------------
+# Point to DataOne ------------------------------------------------------
 
-# Set DataONE Coordinating Node
+# Set DataONE Coordinating Node - We use staging to work with KNB curators before publishing
 cn <- CNode("STAGING")
 # Get reference to node based on its identifier
 mn <- getMNode(cn,'urn:node:mnTestKNB')
@@ -48,9 +53,8 @@ metadataObj <- new(
 # add the new DataObject to the package 
 dp <- addMember(dp, metadataObj)
 
-# Add data files ---------------------------------------------------------
+# Add ARTIS data files to data package ---------------------------------------------------------
 
-#
 artis_data_files <- list.files(path_artis_files, recursive = TRUE, full.names = TRUE)
 
 # Iterate through each ARTIS data file and add as an individual DataObject
@@ -63,8 +67,6 @@ dp <- purrr::reduce(artis_data_files, \(dp, a_data_file) {
   )
   addMember(dp, sourceObj, metadataObj)
 }, .init = dp)
-
-
 
 # Test data package data objects -----------------------------------------
 
@@ -130,6 +132,13 @@ if (dp_data_count == eml_data_count) {
 myAccessRules <- data.frame(
   subject="CN=knb-admins,DC=dataone,DC=org", 
   permission="changePermission") 
+
+### Need to have authentication token from http://dev.nceas.ucsb.edu/
+## Login with ORCiD 
+## (if having problems, click small red link on login popup window and adjust browser settings)
+## Check out dataone r package vignette for more detailed instructions 
+## https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html
+## Note the vignette instructions are for the productions site, we need a stagging site token
 
 packageId <- uploadDataPackage(
   d1c_test, dp, public=TRUE, accessRules=myAccessRules, quiet=FALSE)
