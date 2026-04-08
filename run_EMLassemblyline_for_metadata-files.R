@@ -306,10 +306,12 @@ EMLassemblyline::make_eml(
   data.table              = list.files(path_data, pattern = "\\.csv$"),
   data.table.name         = tools::file_path_sans_ext(list.files(path_data, pattern = "\\.csv$")),
   data.table.description  = artis_defs_tbl,
+  # add validation file
   other.entity            = "07-post-processing-validation_1.2.0_FAO.html",
   other.entity.name       = "ARTIS v1.2 FAO Data Validation Report",
   other.entity.description = "Self-contained HTML report summarising data validation checks for the ARTIS v1.2 FAO dataset.",
-  package.id              = ""
+  package.id              = "",
+  user.domain             = "KNB"
 )
 
 # Post EAL EML corrections -----------------------------------------------
@@ -323,15 +325,15 @@ EMLassemblyline::make_eml(
 # cloned many times (once per parquet file); reference table templates
 # are cloned once each.
 
+# Read the EAL-generated EML back in as an R list object
+eml <- EML::read_eml(file.path(path_eml, ".xml"))
+
 # get all parquet file paths relative to path_artis_files
 artis_parquet_files <- list.files(
   path_artis_files, 
   recursive = TRUE,
   pattern = "\\.parquet$"
 )
-
-# Read the EAL-generated EML back in as an R list object
-eml <- EML::read_eml(file.path(path_eml, ".xml"))
 
 # Extract the 8 EAL-generated template <dataTable> elements from the EML,
 # keyed by ARTIS table type name for lookup below.
