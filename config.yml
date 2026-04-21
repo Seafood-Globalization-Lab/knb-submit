@@ -23,7 +23,6 @@ default:
 
   ### EML values
   maintenance_description: "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available."
-  geo_coverage_desc: "Global coverage"
   geo_coord_N: "90"
   geo_coord_E: "180"
   geo_coord_S: "-90"

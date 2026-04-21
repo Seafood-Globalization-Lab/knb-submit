@@ -1,31 +1,45 @@
 # Push draft ARTIS datapackage to KNB stagging node
 
+# Restart R session ------------------------------------
+
+# start with a clean working envirnoment 
+
 # Required packages (with version control) --------------------------------
 
-#+ Use pak to set software repo to Posit package manager and pin a
+# Use pak to set software repo to Posit package manager and pin a
 # snapshot date for reproducibility
-pak::repo_add(CRAN = "RSPM@2025-10-01")
-pak::pak(c(
-  "dataone",
-  "datapack",
-  "uuid",
-  "purrr",
-  "EML"
-))
-library(dataone)
-library(datapack)
-library(uuid)
-library(purrr)
-library(EML)
+{
+ pak::repo_add(CRAN = "RSPM@2025-10-01")
+  pak::pak(c(
+    "dataone",
+    "datapack",
+    "uuid",
+    "purrr",
+    "EML",
+    "config",
+    "glue"
+  ))
+  library(dataone)
+  library(datapack)
+  library(uuid)
+  library(purrr)
+  library(EML) 
+  library(config)
+  library(glue)
+}
 
+# Get config values ------------------------------------------------------
+
+# read in from ./config.yml
+cfg <- config::get()
 
 # Set ARTIS paths ----------------------------------------------------
 
 # local file path to dataset root directory 
 path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
+path_metadata_dir <- "./artis_metadata_files"
 # path to EML file generated in this project repo
-path_artis_eml <- file.path("metadata-files", "eml", "ARTIS_v1.2_FAO_EML.xml")
-
+path_artis_eml <- file.path(path_metadata_dir, "eml", glue("ARTIS_{cfg$model_version}_{cfg$prod_type}_EML.xml"))
 
 # Load my helper functions --------------------------------------------------
 

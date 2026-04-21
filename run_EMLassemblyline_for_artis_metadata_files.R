@@ -27,7 +27,8 @@ pak::pak(c(
   "readr",
   "EML",
   "config",
-  "here"
+  "here",
+  "bibtex"
 ))
 {
   library(EMLassemblyline)
@@ -41,6 +42,7 @@ pak::pak(c(
   library(EML)
   library(config)
   library(here)
+  library(bibtex)
 }
 
 # Get config values -------------------------------------------------
@@ -83,7 +85,8 @@ if (cfg$clean_up_templates == TRUE) {
       ),
       list.files(
         path_eml,
-        pattern = ".*\\.xml$"
+        pattern = ".*\\.xml$",
+        full.names = TRUE
       )
     )
   )
@@ -125,6 +128,17 @@ artis_defs_tbl <- readr::read_tsv(
   show_col_types = FALSE,
   na = "NA"
 ) |> sanitize_encoding()
+
+
+# Read in ARTIS citations ------------------------------------------------
+
+# Read .bib file and convert each entry to a bibtex string
+bib_entries <- bibtex::read.bib(file.path(path_metadata_dir, "artis_citations.bib"))
+
+# Convert to named list of bibtex strings for EML
+citation_list <- lapply(bib_entries, \(entry) {
+  list(bibtex = format(entry, style = "bibtex"))
+}) %>% unname()
 
 # Setup .csv ARTIS files for EMLassemblyline -----------------------------
 
@@ -311,15 +325,14 @@ artis_defs_tbl <- artis_defs_tbl |>
 
 # Make EML from metadata templates ---------------------------------------
 
-# FIXIT: These values could pull from an ARTIS config file
-
 EMLassemblyline::make_eml(
   path                    = path_templates,
   data.path               = path_data,
   eml.path                = path_eml,
   dataset.title           = dataset_title,
   temporal.coverage       = c(cfg$year_start, cfg$year_end),
-  geographic.description  = cfg$geo_coverage_desc,
+  # Not working with calling config value string, throwing warning message. Hard coding as a work around. 
+  geographic.description  = "Global coverage",
   geographic.coordinates  = c(cfg$geo_coord_N, cfg$geo_coord_E, cfg$geo_coord_S, cfg$geo_coord_W), 
   maintenance.description = cfg$maintenance_description,
   # exclude html validation file in path_data
@@ -346,7 +359,7 @@ EMLassemblyline::make_eml(
 # are cloned once each.
 
 # Read the EAL-generated EML back in as an R list object
-eml <- EML::read_eml(file.path(path_eml, ".xml"))
+eml <- EML::read_eml(file.path(path_eml, "artis_eml_draft.xml"))
 
 # get all parquet file paths relative to path_artis_files
 artis_parquet_files <- list.files(
@@ -392,11 +405,14 @@ parquet_datatables <- purrr::map(artis_parquet_files, \(f) {
 
 # Replace the 8 representative CSV <dataTable> elements with the 148
 # parquet <dataTable> elements via list assignment.
-# The original EAL-generated EML is preserved unchanged at "ARTIS_v1.2_FAO.xml".
+# The original EAL-generated EML is preserved unchanged at "artis_eml_draft.xml".
 eml$dataset$dataTable <- parquet_datatables
 
 # Document the partitioned file structure at the dataset level
 eml$dataset$additionalInfo <- cfg$artis_eml_additionalInfo
+
+# Add Literature cited from artis_citations.bib file
+eml$dataset$literatureCited <- list(citation = citation_list)
 
 EML::write_eml(eml, file.path(path_eml, final_eml_name))
 
