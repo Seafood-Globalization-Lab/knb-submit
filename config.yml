@@ -1,0 +1,42 @@
+# ARTIS Dataset Release Configuration
+
+# created: 2026-04-20
+# author: Althea Marks
+
+# This should be the only file that requires updating release to release
+# Update these values for each new release before running the workflow scripts.
+
+### Model paramenters
+default:
+  # use semantic versioning with "v", drop the "patch" number the third number i.e. 0.0.0
+  model_version: "v1.2"
+  model_version_sem: "1.2.0"
+  prod_type: "FAO"
+  year_start: "1996"
+  year_end: "2020"
+
+  ### `run_EMLassemblyline_for_metadata-files.R` parameters 
+  # delete generated templates
+  clean_up_templates: true
+  # convert artis output parquet files to csv files to run through EAL workflow
+  convert_parquets: false
+
+  ### EML values
+  maintenance_description: "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available."
+  geo_coverage_desc: "Global coverage"
+  geo_coord_N: "90"
+  geo_coord_E: "180"
+  geo_coord_S: "-90"
+  geo_coord_W: "-180"
+  # text to add into EML additionalInfo element
+  artis_eml_additionalInfo: "The consumption and trade tables are partitioned into
+    individual parquet files by HS version and year. All consumption files share an identical
+    schema, as do all trade files. The complete consumption and trade datasets are obtained by
+    combining all files of each type."
+
+  ### DataONE publishing target / parameters
+  # Use "STAGING" + "urn:node:mnTestKNB" for pre-release review
+  # Use "PROD" + "urn:node:KNB" for final publication
+  data_repo: "KNB"
+  dataone_coordinating_node: "STAGING"
+  dataone_member_node: "urn:node:mnTestKNB"

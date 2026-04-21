@@ -25,23 +25,34 @@ pak::pak(c(
   "stringr",
   "glue",
   "readr",
-  "EML"
+  "EML",
+  "config",
+  "here"
 ))
-library(EMLassemblyline)
-library(usethis)
-library(arrow)
-library(dplyr)
-library(tools)
-library(stringr)
-library(glue)
-library(readr)
-library(EML)
+{
+  library(EMLassemblyline)
+  library(usethis)
+  library(arrow)
+  library(dplyr)
+  library(tools)
+  library(stringr)
+  library(glue)
+  library(readr)
+  library(EML)
+  library(config)
+  library(here)
+}
 
-# Personal script config -------------------------------------------------
+# Get config values -------------------------------------------------
 
-clean_up_templates <- "yes"
-convert_parquets   <- "no"
-final_eml_name <- "ARTIS_v1.2_FAO_EML.xml"
+cfg <- config::get()
+
+# Derive all filenames from config values
+dataset_title <- glue("Aquatic Resource Trade in Species (ARTIS) Database {cfg$model_version} {cfg$prod_type} {cfg$year_start}-{cfg$year_end}")
+final_eml_name <- glue("ARTIS_{cfg$model_version}_{cfg$prod_type}_EML.xml")
+validation_report_filename <- glue("07-post-processing-validation_{cfg$model_version_sem}_{cfg$prod_type}.html")
+validation_report_name <- glue("ARTIS {cfg$model_version} {cfg$prod_type} Data Validation Report")
+validation_description <- glue("Self-contained HTML report summarising data validation and assumption checks for the ARTIS {cfg$model_version} {cfg$prod_type} dataset.")
 
 # File Paths -------------------------------------------------------------
 
@@ -49,7 +60,7 @@ final_eml_name <- "ARTIS_v1.2_FAO_EML.xml"
 # usethis::edit_r_environ(scope = c("project"))
 
 path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
-path_metadata_dir <- "./metadata-files"
+path_metadata_dir <- "./artis_metadata_files"
 path_templates    <- file.path(path_metadata_dir, "metadata_templates")
 path_data         <- file.path(path_metadata_dir, "data_objects")
 path_eml          <- file.path(path_metadata_dir, "eml")
@@ -63,17 +74,26 @@ source("./functions/ARTIS_EAL_helper_functions.R")
 # Delete templated files if rerunning the script to avoid stale attribute/catvars files.
 
 #### THIS DELETES FILES
-if (clean_up_templates == "yes") {
+if (cfg$clean_up_templates == TRUE) {
   file.remove(
-    list.files(
-      path_templates,
-      pattern = "^(attributes_|catvars_).*\\.txt$",
-      full.names = TRUE
+    c(list.files(
+        path_templates,
+        pattern = "^(attributes_|catvars_).*\\.txt$",
+        full.names = TRUE
+      ),
+      list.files(
+        path_eml,
+        pattern = ".*\\.xml$"
+      )
     )
   )
 }
 
 # Read in ARTIS definitions ----------------------------------------------
+
+# Run test script that checks if long-lived ARTIS data dictionaries contain expected values and schema
+# to populate EAL tempates.
+testthat::test_file(path = "./tests/test_artis_dictionaries_valid.R")
 
 # Read in long-lived ARTIS data dictionaries (attribute definitions).
 # Most values will not need updating between release versions unless new columns
@@ -83,32 +103,32 @@ if (clean_up_templates == "yes") {
 # characters. sanitize_encoding() is applied at read-in to clean these up.
 
 artis_defs_attr <- readr::read_tsv(
-  "metadata-files/artis_dictionary_tbl_attributes.txt",
+  file.path(path_metadata_dir, "artis_dictionary_tbl_attributes.txt"),
   show_col_types = FALSE,
   na = "NA"
 ) |> sanitize_encoding()
 
 artis_defs_catvars <- readr::read_tsv(
-  "metadata-files/artis_dictionary_tbl_attributes_catvars.txt",
+  file.path(path_metadata_dir, "artis_dictionary_tbl_attributes_catvars.txt"),
   show_col_types = FALSE,
   na = "NA"
 ) |> sanitize_encoding()
 
 artis_defs_hs_v <- readr::read_tsv(
-  "metadata-files/artis_dictionary_hs_version.txt",
+  file.path(path_metadata_dir, "artis_dictionary_hs_version.txt"),
   show_col_types = FALSE,
   na = "NA"
 ) |> sanitize_encoding()
 
 artis_defs_tbl <- readr::read_tsv(
-  "metadata-files/artis_dictionary_tbl.txt",
+  file.path(path_metadata_dir, "artis_dictionary_tbl.txt"),
   show_col_types = FALSE,
   na = "NA"
 ) |> sanitize_encoding()
 
 # Setup .csv ARTIS files for EMLassemblyline -----------------------------
 
-if (convert_parquets == "yes") {
+if (cfg$convert_parquets == TRUE) {
   # get filepaths for representative ARTIS data files (one trade, one consumption, all reference)
   paths_artis_subset <- get_parquet_data_subset(
     path_data_dir = path_artis_files
@@ -144,7 +164,7 @@ EMLassemblyline::template_table_attributes(
 )
 
 # Delete custom_units.txt - automatically generated and not required
-file.remove("metadata-files/metadata_templates/custom_units.txt")
+file.remove(file.path(path_templates, "custom_units.txt"))
 
 # view_unit_dictionary()
 
@@ -297,21 +317,21 @@ EMLassemblyline::make_eml(
   path                    = path_templates,
   data.path               = path_data,
   eml.path                = path_eml,
-  dataset.title           = "Aquatic Resource Trade in Species (ARTIS) v1.2 FAO 1996-2020",
-  temporal.coverage       = c("1996", "2020"),
-  geographic.description  = "Global coverage",
-  geographic.coordinates  = c("90", "180", "-90", "-180"),
-  maintenance.description = "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available.",
+  dataset.title           = dataset_title,
+  temporal.coverage       = c(cfg$year_start, cfg$year_end),
+  geographic.description  = cfg$geo_coverage_desc,
+  geographic.coordinates  = c(cfg$geo_coord_N, cfg$geo_coord_E, cfg$geo_coord_S, cfg$geo_coord_W), 
+  maintenance.description = cfg$maintenance_description,
   # exclude html validation file in path_data
   data.table              = list.files(path_data, pattern = "\\.csv$"),
   data.table.name         = tools::file_path_sans_ext(list.files(path_data, pattern = "\\.csv$")),
   data.table.description  = artis_defs_tbl,
   # add validation file
-  other.entity            = "07-post-processing-validation_1.2.0_FAO.html",
-  other.entity.name       = "ARTIS v1.2 FAO Data Validation Report",
-  other.entity.description = "Self-contained HTML report summarising data validation checks for the ARTIS v1.2 FAO dataset.",
-  package.id              = "",
-  user.domain             = "KNB"
+  other.entity            = validation_report_filename,
+  other.entity.name       = validation_report_name,
+  other.entity.description = validation_description, 
+  package.id              = "artis_eml_draft",
+  user.domain             = cfg$data_repo
 )
 
 # Post EAL EML corrections -----------------------------------------------
@@ -376,10 +396,7 @@ parquet_datatables <- purrr::map(artis_parquet_files, \(f) {
 eml$dataset$dataTable <- parquet_datatables
 
 # Document the partitioned file structure at the dataset level
-eml$dataset$additionalInfo <- "The consumption and trade tables are partitioned into
-individual parquet files by HS version and year. All consumption files share an identical
-schema, as do all trade files. The complete consumption and trade datasets are obtained by
-combining all files of each type."
+eml$dataset$additionalInfo <- cfg$artis_eml_additionalInfo
 
 EML::write_eml(eml, file.path(path_eml, final_eml_name))
 

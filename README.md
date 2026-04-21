@@ -188,7 +188,7 @@ Before publishing, run the dictionary and template checks. These are **not** a s
 This is particularly useful to run after editing any of the dictionary files before re-running the main script:
 
 ```r
-testthat::test_file("tests/testthat/test-artis-eml-validation.R")
+testthat::test_file("tests/testthat/test_artis_dictionaries_valid.R")
 ```
 
 The checks confirm:
