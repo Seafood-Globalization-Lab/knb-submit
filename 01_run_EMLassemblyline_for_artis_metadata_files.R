@@ -348,9 +348,11 @@ EMLassemblyline::make_eml(
 )
 
 # Post EAL EML corrections -----------------------------------------------
+
 # The EAL workflow generates EML describing 8 representative .csv files.
 # This section replaces those <dataTable> elements with ones describing
 # the actual 148 parquet files that make up the ARTIS dataset on KNB.
+
 # Strategy: clone each of the 8 EAL-generated <dataTable> elements,
 # keeping the full <attributeList> and all other metadata intact.
 # Only <physical>, <entityName>, and <entityDescription> are replaced

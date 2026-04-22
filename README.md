@@ -1,10 +1,10 @@
-# Submit ARTIS to KNB Data Repository
+# Publish ARTIS Database on KNB Data Repository
 
-### Purpose
+### Purpose of this repo
 
-- Long-term stable archive of model inputs, model, database, and metadata
-- Open-access distribution point for the public and collaborators
-- Reusable automated creation of EML metadata
+- Reproducible and versioned creation of EML metadata
+- Reusable automated authoring of EML metadata
+- Version controled data dictionaries and citations
 - Reusable automated upload of database and metadata to KNB
 
 ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing to the larger open-science and reproducible science community. ARTIS uses KNB as an access point for anyone to download the ARTIS model codebase and ARTIS database.
