@@ -11,10 +11,10 @@
 # Do not rerun - here for documentation only.
 # template_directories("./", "metadata-files")
 
-# Required packages (with version control) --------------------------------
+# Required packages --------------------------------
 
 # Use pak to set software repo to Posit package manager and pin a
-# snapshot date for reproducibility
+# snapshot date for versioning and reproducibility
 pak::repo_add(CRAN = "RSPM@2025-10-01")
 pak::pak(c(
   "EDIorg/EMLassemblyline",
@@ -56,7 +56,7 @@ validation_report_filename <- glue("07-post-processing-validation_{cfg$model_ver
 validation_report_name <- glue("ARTIS {cfg$model_version} {cfg$prod_type} Data Validation Report")
 validation_description <- glue("Self-contained HTML report summarising data validation and assumption checks for the ARTIS {cfg$model_version} {cfg$prod_type} dataset.")
 
-# File Paths -------------------------------------------------------------
+# Set file Paths -------------------------------------------------------------
 
 # Set path to pre-released local ARTIS dataset in .Renviron file at project level:
 # usethis::edit_r_environ(scope = c("project"))
@@ -70,7 +70,7 @@ path_eml          <- file.path(path_metadata_dir, "eml")
 # Load custom helper functions -------------------------------------------
 source("./functions/ARTIS_EAL_helper_functions.R")
 
-# Clean up metadata-files/metadata_templates -----------------------------
+# Clean up generated files -----------------------------
 
 # Running EAL template functions will not overwrite existing files in metadata_templates/.
 # Delete templated files if rerunning the script to avoid stale attribute/catvars files.
@@ -92,7 +92,7 @@ if (cfg$clean_up_templates == TRUE) {
   )
 }
 
-# Read in ARTIS definitions ----------------------------------------------
+# Get ARTIS data dictionaries ----------------------------------------------
 
 # Run test script that checks if long-lived ARTIS data dictionaries contain expected values and schema
 # to populate EAL tempates.
@@ -129,8 +129,14 @@ artis_defs_tbl <- readr::read_tsv(
   na = "NA"
 ) |> sanitize_encoding()
 
+# Clean ARTIS datatable definitions --------------------------------------------
 
-# Read in ARTIS citations ------------------------------------------------
+# Pull ordered vector of table-level descriptions for use in make_eml()
+artis_defs_tbl <- artis_defs_tbl |>
+  arrange(datatable_general_name) |>
+  pull(definition)
+
+# Get ARTIS citations ------------------------------------------------
 
 # Read .bib file and convert each entry to a bibtex string
 bib_entries <- bibtex::read.bib(file.path(path_metadata_dir, "artis_citations.bib"))
@@ -140,7 +146,7 @@ citation_list <- lapply(bib_entries, \(entry) {
   list(bibtex = format(entry, style = "bibtex"))
 }) %>% unname()
 
-# Setup .csv ARTIS files for EMLassemblyline -----------------------------
+# Convert ARTIS Parquet files to CSV -----------------------------
 
 if (cfg$convert_parquets == TRUE) {
   # get filepaths for representative ARTIS data files (one trade, one consumption, all reference)
@@ -155,7 +161,7 @@ if (cfg$convert_parquets == TRUE) {
   )
 }
 
-# Create metadata templates ----------------------------------------------
+# Create EAL metadata templates ----------------------------------------------
 
 # Boilerplate EAL template function calls. Remove functions and arguments
 # you don't need. Read the docs before editing: ?template_core_metadata
@@ -182,7 +188,7 @@ file.remove(file.path(path_templates, "custom_units.txt"))
 
 # view_unit_dictionary()
 
-# Join ARTIS definitions - attribute templates ---------------------------
+# Join ARTIS defs - attribute templates ---------------------------
 
 # Vector of general ARTIS datatable names (without model version info)
 # used to match against versioned "attributes_*.txt" template files
@@ -228,7 +234,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
   message(glue("Updated `{an_attr_tbl_file}` with ARTIS attribute definitions"))
 })
 
-# Join ARTIS definitions - categorical variable templates ----------------
+# Join ARTIS defs - categorical variable templates ----------------
 
 # Create categorical variables template (required when attributes templates
 # contain variables with a "categorical" class)
@@ -316,14 +322,7 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
 #   taxa.name.type = "",
 #   taxa.authority = 3)
 
-# ARTIS datatable definitions --------------------------------------------
-
-# Pull ordered vector of table-level descriptions for use in make_eml()
-artis_defs_tbl <- artis_defs_tbl |>
-  arrange(datatable_general_name) |>
-  pull(definition)
-
-# Make EML from metadata templates ---------------------------------------
+# Make EAL EML draft ---------------------------------------
 
 EMLassemblyline::make_eml(
   path                    = path_templates,
@@ -349,6 +348,7 @@ EMLassemblyline::make_eml(
 
 # Post EAL EML corrections -----------------------------------------------
 
+## Replace csv files with parquet -----------------------------------------------
 # The EAL workflow generates EML describing 8 representative .csv files.
 # This section replaces those <dataTable> elements with ones describing
 # the actual 148 parquet files that make up the ARTIS dataset on KNB.
@@ -410,13 +410,35 @@ parquet_datatables <- purrr::map(artis_parquet_files, \(f) {
 # The original EAL-generated EML is preserved unchanged at "artis_eml_draft.xml".
 eml$dataset$dataTable <- parquet_datatables
 
+## Note file architecture -----------------------------------------------
 # Document the partitioned file structure at the dataset level
 eml$dataset$additionalInfo <- cfg$artis_eml_additionalInfo
 
-# Add Literature cited from artis_citations.bib file
+## Add Literature cited -----------------------------------------------
+# from artis_citations.bib file
 eml$dataset$literatureCited <- list(citation = citation_list)
 
+## Add data sensitivity -----------------------------------------------
+# Assign data sensitivity category - defined ontology: https://ontologies.dataone.org/SENSO.html#0.1.0
+eml$dataset$id <- "artis-database" 
+
+eml$dataset$annotation <- list(
+  propertyURI = list(
+    label = "Data Sensitivity Category",
+    propertyURI = "http://purl.dataone.org/odo/SENSO_00000005"
+  ),
+  valueURI = list(
+    label = "Non-sensitive data",
+    valueURI = "http://purl.dataone.org/odo/SENSO_00000002"
+  )
+)
+
+# Write Final EML --------------------------------------------------------
 EML::write_eml(eml, file.path(path_eml, final_eml_name))
 
-# Validate the final EML
+# Validate EML -----------------------------------------------------------
 EML::eml_validate(file.path(path_eml, final_eml_name))
+
+# Score EML quality ------------------------------------------------------
+# function for hosted datapackages, not local copies
+# arcticdatautils::mdq_run(file.path(path_eml, final_eml_name))
