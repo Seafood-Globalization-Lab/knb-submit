@@ -4,6 +4,14 @@
 
 # start with a clean working envirnoment 
 
+
+# Set KNB stagging node credentials --------------------------------------
+
+# 1) navigate to https://dev.nceas.ucsb.edu/ (may need to use a different browser)
+# 2) login with your ORCid
+# 3) navigate to your profile, settings, authentication Token, and "Token for DataONE R" 
+# 4) copy the string to your clipboad. Paste and call in your console to set temporary access token
+
 # Required packages (with version control) --------------------------------
 
 # Use pak to set software repo to Posit package manager and pin a
@@ -17,7 +25,8 @@
     "purrr",
     "EML",
     "config",
-    "glue"
+    "glue",
+    "arcticdatautils"
   ))
   library(dataone)
   library(datapack)
@@ -26,6 +35,7 @@
   library(EML) 
   library(config)
   library(glue)
+  library(arcticdatautils)
 }
 
 # Get config values ------------------------------------------------------
@@ -40,6 +50,9 @@ path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
 path_metadata_dir <- "./artis_metadata_files"
 # path to EML file generated in this project repo
 path_artis_eml <- file.path(path_metadata_dir, "eml", glue("ARTIS_{cfg$model_version}_{cfg$prod_type}_EML.xml"))
+# to inspect
+#eml <- EML::read_eml(path_artis_eml)
+
 
 # Load my helper functions --------------------------------------------------
 
@@ -48,9 +61,9 @@ source("./functions/ARTIS_EAL_helper_functions.R")
 # Point to DataOne ------------------------------------------------------
 
 # Set DataONE Coordinating Node - We use staging to work with KNB curators before publishing
-cn <- CNode("STAGING")
+cn <- CNode(cfg$dataone_coordinating_node)
 # Get reference to node based on its identifier
-mn <- getMNode(cn,'urn:node:mnTestKNB')
+mn <- getMNode(cn,cfg$dataone_member_node)
 # DataONE client class used to download, update, and search for data in the DataONE network
 d1c_test <- D1Client(cn,mn)
 
@@ -67,27 +80,49 @@ metadataObj <- new(
 # add the new DataObject to the package 
 dp <- addMember(dp, metadataObj)
 
+# Extract the metadata PID string from the already-constructed metadataObj
+metadataId <- metadataObj@sysmeta@identifier
+
 # Add ARTIS data files to data package ---------------------------------------------------------
 
-artis_data_files <- list.files(path_artis_files, recursive = TRUE, full.names = TRUE)
+# get the absolute file paths to local artis data files
+path_abs_artis_data_files <- list.files(path_artis_files, recursive = TRUE, full.names = TRUE)
+# get the relative file paths (folder architecture) 
+path_rel_artis_data_files <- list.files(path_artis_files, recursive = TRUE, full.names = FALSE)
 
 # Iterate through each ARTIS data file and add as an individual DataObject
-# purrr::reduce() threads the updated dp forward through each iteration
-dp <- purrr::reduce(artis_data_files, \(dp, a_data_file) {
-  sourceObj <- new(
-    "DataObject",
-    format   = get_format(a_data_file),
-    filename = a_data_file
-  )
-  addMember(dp, sourceObj, metadataObj)
-}, .init = dp)
+
+# Step 1: build and inspect the list of DataObjects first
+# This is slow because it makes requests to KNB for every file
+data_objects <- purrr::map2(
+  path_abs_artis_data_files,
+  path_rel_artis_data_files,
+  \(abs_path, rel_path) {
+    formatId <- arcticdatautils::guess_format_id(abs_path)
+    id       <- generateIdentifier(d1c_test@mn, scheme = "uuid")
+    new(
+      "DataObject",
+      format     = formatId,
+      filename   = abs_path,
+      targetPath = rel_path,
+      id         = id
+    )
+  }
+)
+
+# Inspect before committing — e.g. check targetPath for file architecture on KNB
+
+# Step 2: once happy, add list of dataObjs to dp data package
+for (dataObj in data_objects) {
+  dp <- addMember(dp, dataObj, metadataId)
+}
 
 # Test data package data objects -----------------------------------------
 
-# Dynamically detect file extensions from dp@objects and artis_data_files
+# Dynamically detect file extensions from dp@objects and path_abs_artis_data_files
 # and compare counts to ensure all files were added correctly
 dp_formats <- table(sapply(dp@objects, \(obj) tools::file_ext(obj@sysmeta@fileName)))
-artis_formats <- table(tools::file_ext(c(basename(artis_data_files), basename(path_artis_eml))))
+artis_formats <- table(tools::file_ext(c(basename(path_abs_artis_data_files), basename(path_artis_eml))))
 
 # Build readable summary strings from detected extensions
 format_summary <- function(format_table) {
@@ -102,13 +137,13 @@ format_summary <- function(format_table) {
 if (all(dp_formats == artis_formats)) {
   message(glue::glue(
     "Data package check passed: {length(dp@objects)} total members\n",
-    "  artis_data_files: {format_summary(artis_formats)}\n",
+    "  path_abs_artis_data_files: {format_summary(artis_formats)}\n",
     "  dp@objects:       {format_summary(dp_formats)}"
   ))
 } else {
   stop(glue::glue(
     "Data package member count mismatch:\n",
-    "  artis_data_files: {format_summary(artis_formats)}\n",
+    "  path_abs_artis_data_files: {format_summary(artis_formats)}\n",
     "  dp@objects:       {format_summary(dp_formats)}"
   ))
 }
