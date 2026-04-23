@@ -342,7 +342,7 @@ EMLassemblyline::make_eml(
   other.entity            = validation_report_filename,
   other.entity.name       = validation_report_name,
   other.entity.description = validation_description, 
-  package.id              = "artis_eml_draft",
+  package.id              = "my-pkg-tmp-id",
   user.domain             = cfg$data_repo
 )
 
@@ -361,7 +361,7 @@ EMLassemblyline::make_eml(
 # are cloned once each.
 
 # Read the EAL-generated EML back in as an R list object
-eml <- EML::read_eml(file.path(path_eml, "artis_eml_draft.xml"))
+eml <- EML::read_eml(file.path(path_eml, "my-pkg-tmp-id.xml"))
 
 # get all parquet file paths relative to path_artis_files
 artis_parquet_files <- list.files(
@@ -420,7 +420,7 @@ eml$dataset$literatureCited <- list(citation = citation_list)
 
 ## Add data sensitivity -----------------------------------------------
 # Assign data sensitivity category - defined ontology: https://ontologies.dataone.org/SENSO.html#0.1.0
-eml$dataset$id <- "artis-database" 
+eml$dataset$id <- "my-dataset-tmp-id" 
 
 eml$dataset$annotation <- list(
   propertyURI = list(

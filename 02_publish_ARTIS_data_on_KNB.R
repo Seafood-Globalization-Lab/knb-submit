@@ -12,6 +12,11 @@
 # 3) navigate to your profile, settings, authentication Token, and "Token for DataONE R" 
 # 4) copy the string to your clipboad. Paste and call in your console to set temporary access token
 
+# (if having problems, click small red link on login popup window and adjust browser settings)
+# Check out dataone r package vignette for more detailed instructions 
+# https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html
+# Note the vignette instructions are for the productions site, we need a stagging site token
+
 # Required packages (with version control) --------------------------------
 
 # Use pak to set software repo to Posit package manager and pin a
@@ -61,11 +66,11 @@ source("./functions/ARTIS_EAL_helper_functions.R")
 # Point to DataOne ------------------------------------------------------
 
 # Set DataONE Coordinating Node - We use staging to work with KNB curators before publishing
-cn <- CNode(cfg$dataone_coordinating_node)
+cn <- dataone::CNode(cfg$dataone_coordinating_node)
 # Get reference to node based on its identifier
-mn <- getMNode(cn,cfg$dataone_member_node)
+mn <- dataone::getMNode(cn,cfg$dataone_member_node)
 # DataONE client class used to download, update, and search for data in the DataONE network
-d1c_test <- D1Client(cn,mn)
+d1c_test <- dataone::D1Client(cn,mn)
 
 # Build data package -----------------------------------------
 
@@ -78,7 +83,7 @@ metadataObj <- new(
   format="https://eml.ecoinformatics.org/eml-2.2.0", 
   filename=path_artis_eml)
 # add the new DataObject to the package 
-dp <- addMember(dp, metadataObj)
+dp <- datapack::addMember(dp, metadataObj)
 
 # Extract the metadata PID string from the already-constructed metadataObj
 metadataId <- metadataObj@sysmeta@identifier
@@ -93,13 +98,12 @@ path_rel_artis_data_files <- list.files(path_artis_files, recursive = TRUE, full
 # Iterate through each ARTIS data file and add as an individual DataObject
 
 # Step 1: build and inspect the list of DataObjects first
-# This is slow because it makes requests to KNB for every file
 data_objects <- purrr::map2(
   path_abs_artis_data_files,
   path_rel_artis_data_files,
   \(abs_path, rel_path) {
     formatId <- arcticdatautils::guess_format_id(abs_path)
-    id       <- generateIdentifier(d1c_test@mn, scheme = "uuid")
+    id       <- uuid::UUIDgenerate()
     new(
       "DataObject",
       format     = formatId,
@@ -114,15 +118,20 @@ data_objects <- purrr::map2(
 
 # Step 2: once happy, add list of dataObjs to dp data package
 for (dataObj in data_objects) {
-  dp <- addMember(dp, dataObj, metadataId)
+  dp <- datapack::addMember(dp, dataObj, metadataId)
 }
 
 # Test data package data objects -----------------------------------------
 
 # Dynamically detect file extensions from dp@objects and path_abs_artis_data_files
 # and compare counts to ensure all files were added correctly
-dp_formats <- table(sapply(dp@objects, \(obj) tools::file_ext(obj@sysmeta@fileName)))
-artis_formats <- table(tools::file_ext(c(basename(path_abs_artis_data_files), basename(path_artis_eml))))
+dp_formats <- table(sapply(dp@objects, \(obj) {
+  tools::file_ext(obj@sysmeta@fileName)
+}))
+artis_formats <- table(tools::file_ext(c(
+  basename(path_abs_artis_data_files),
+  basename(path_artis_eml)
+)))
 
 # Build readable summary strings from detected extensions
 format_summary <- function(format_table) {
@@ -182,12 +191,7 @@ myAccessRules <- data.frame(
   subject="CN=knb-admins,DC=dataone,DC=org", 
   permission="changePermission") 
 
-### Need to have authentication token from http://dev.nceas.ucsb.edu/
-## Login with ORCiD 
-## (if having problems, click small red link on login popup window and adjust browser settings)
-## Check out dataone r package vignette for more detailed instructions 
-## https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html
-## Note the vignette instructions are for the productions site, we need a stagging site token
+## Need to have authentication token from http://dev.nceas.ucsb.edu/
 
-packageId <- uploadDataPackage(
+packageId <- dataone::uploadDataPackage(
   d1c_test, dp, public=TRUE, accessRules=myAccessRules, quiet=FALSE)
