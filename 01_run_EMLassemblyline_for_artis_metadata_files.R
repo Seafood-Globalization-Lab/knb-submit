@@ -15,22 +15,23 @@
 
 # Use pak to set software repo to Posit package manager and pin a
 # snapshot date for versioning and reproducibility
-pak::repo_add(CRAN = "RSPM@2025-10-01")
-pak::pak(c(
-  "EDIorg/EMLassemblyline",
-  "usethis",
-  "arrow",
-  "dplyr",
-  "tools",
-  "stringr",
-  "glue",
-  "readr",
-  "EML",
-  "config",
-  "here",
-  "bibtex"
-))
 {
+  pak::repo_add(CRAN = "RSPM@2025-10-01")
+  pak::pak(c(
+    "EDIorg/EMLassemblyline",
+    "usethis",
+    "arrow",
+    "dplyr",
+    "tools",
+    "stringr",
+    "glue",
+    "readr",
+    "EML",
+    "config",
+    "here",
+    "bibtex",
+    "uuid"
+  ))
   library(EMLassemblyline)
   library(usethis)
   library(arrow)
@@ -43,6 +44,7 @@ pak::pak(c(
   library(config)
   library(here)
   library(bibtex)
+  library(uuid)
 }
 
 # Get config values -------------------------------------------------
@@ -324,6 +326,8 @@ purrr::walk(artis_gen_tbl_names, \(a_gen_tbl_name) {
 
 # Make EAL EML draft ---------------------------------------
 
+pkg_uuid <- generate_knb_style_uuid()
+
 EMLassemblyline::make_eml(
   path                    = path_templates,
   data.path               = path_data,
@@ -342,7 +346,7 @@ EMLassemblyline::make_eml(
   other.entity            = validation_report_filename,
   other.entity.name       = validation_report_name,
   other.entity.description = validation_description, 
-  package.id              = "my-pkg-tmp-id",
+  package.id              = pkg_uuid,
   user.domain             = cfg$data_repo
 )
 
@@ -361,7 +365,7 @@ EMLassemblyline::make_eml(
 # are cloned once each.
 
 # Read the EAL-generated EML back in as an R list object
-eml <- EML::read_eml(file.path(path_eml, "my-pkg-tmp-id.xml"))
+eml <- EML::read_eml(file.path(path_eml, paste0(pkg_uuid,".xml")))
 
 # get all parquet file paths relative to path_artis_files
 artis_parquet_files <- list.files(

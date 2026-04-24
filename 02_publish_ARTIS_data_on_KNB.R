@@ -17,7 +17,7 @@
 # https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html
 # Note the vignette instructions are for the productions site, we need a stagging site token
 
-# Required packages (with version control) --------------------------------
+# Required packages --------------------------------
 
 # Use pak to set software repo to Posit package manager and pin a
 # snapshot date for reproducibility
@@ -31,7 +31,7 @@
     "EML",
     "config",
     "glue",
-    "arcticdatautils"
+    "nceas/arcticdatautils"
   ))
   library(dataone)
   library(datapack)
@@ -102,8 +102,8 @@ data_objects <- purrr::map2(
   path_abs_artis_data_files,
   path_rel_artis_data_files,
   \(abs_path, rel_path) {
-    formatId <- arcticdatautils::guess_format_id(abs_path)
-    id       <- uuid::UUIDgenerate()
+    formatId <- get_format(abs_path)
+    id       <- generate_knb_style_uuid()
     new(
       "DataObject",
       format     = formatId,
