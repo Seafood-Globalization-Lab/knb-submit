@@ -235,3 +235,19 @@ strip_bounds <- function(datatable_template) {
   datatable_template$attributeList$attribute <- attrs
   datatable_template
 }
+
+# Helper to replace default fallback behavior by EAL to populate textDomain definition with attribute definition. 
+replace_textDomain_def <- function(datatable_template) {
+  attrs <- datatable_template$attributeList$attribute
+
+    attrs <- lapply(attrs, \(attr) {
+    def <- attr$measurementScale$nominal$nonNumericDomain$textDomain$definition
+    if (!is.null(def)) {
+      attr$measurementScale$nominal$nonNumericDomain$textDomain$definition <- "any text"
+    }
+    attr
+  })
+  
+  datatable_template$attributeList$attribute <- attrs
+  datatable_template
+}

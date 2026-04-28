@@ -398,6 +398,9 @@ templates <- list(
 # Remove calculated max and min numericDomain values from templates before cloning into parquet dataTables
 templates <- lapply(templates, strip_bounds)
 
+# Replace attribute textDomain$definition with KNB default "any text"
+templates <- lapply(templates, replace_textDomain_def)
+
 # Generate a cloned <dataTable> element for each of the 148 parquet files.
 # Each file is matched to its ARTIS table type, then the corresponding
 # template <dataTable> is copied and three fields are overwritten:
