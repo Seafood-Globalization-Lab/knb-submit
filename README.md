@@ -1,5 +1,11 @@
 # Publish ARTIS Database on KNB Data Repository
 
+FIXIT: 
+- Quick run instructions - config, run scripts
+- Quick updates - add citations, add personel, change defs
+- How to add a new table - add entry to artis_dictionary & chunk of 01 code
+- Move artis_dictionaries to new folder
+
 ### Purpose of this repo
 
 - Reproducible and versioned creation of EML metadata
