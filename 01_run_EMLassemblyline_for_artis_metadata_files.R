@@ -64,13 +64,14 @@ validation_description <- glue("Self-contained HTML report summarising data vali
 # usethis::edit_r_environ(scope = c("project"))
 
 path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
-path_metadata_dir <- "./artis_metadata_files"
+path_metadata_dir <- "artis_metadata_files"
 path_templates    <- file.path(path_metadata_dir, "metadata_templates")
 path_data         <- file.path(path_metadata_dir, "data_objects")
 path_eml          <- file.path(path_metadata_dir, "eml")
+path_dictionaries <- "artis_dictionaries"
 
 # Load custom helper functions -------------------------------------------
-source("./functions/ARTIS_EAL_helper_functions.R")
+source(file.path("functions", "ARTIS_EAL_helper_functions.R"))
 
 # Clean up generated files -----------------------------
 
@@ -108,28 +109,28 @@ testthat::test_file(path = "./tests/test_artis_dictionaries_valid.R")
 # characters. sanitize_encoding() is applied at read-in to clean these up.
 
 artis_defs_attr <- readr::read_tsv(
-  file.path(path_metadata_dir, "artis_dictionary_tbl_attributes.txt"),
+  file.path(path_dictionaries, "artis_dictionary_tbl_attributes.txt"),
   locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
 ) 
 
 artis_defs_catvars <- readr::read_tsv(
-  file.path(path_metadata_dir, "artis_dictionary_tbl_attributes_catvars.txt"),
+  file.path(path_dictionaries, "artis_dictionary_tbl_attributes_catvars.txt"),
   locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
 )
 
 artis_defs_hs_v <- readr::read_tsv(
-  file.path(path_metadata_dir, "artis_dictionary_hs_version.txt"),
+  file.path(path_dictionaries, "artis_dictionary_hs_version.txt"),
   locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
 ) 
 
 artis_defs_tbl <- readr::read_tsv(
-  file.path(path_metadata_dir, "artis_dictionary_tbl.txt"),
+  file.path(path_dictionaries, "artis_dictionary_tbl.txt"),
   locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
@@ -145,7 +146,7 @@ artis_defs_tbl <- artis_defs_tbl |>
 # Get ARTIS citations ------------------------------------------------
 
 # Read .bib file and convert each entry to a bibtex string
-bib_entries <- bibtex::read.bib(file.path(path_metadata_dir, "artis_citations.bib"))
+bib_entries <- bibtex::read.bib(file.path(path_dictionaries, "artis_citations.bib"))
 
 # Convert to named list of bibtex strings for EML
 citation_list <- lapply(bib_entries, \(entry) {
