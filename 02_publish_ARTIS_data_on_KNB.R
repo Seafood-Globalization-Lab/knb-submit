@@ -56,12 +56,17 @@ path_metadata_dir <- "./artis_metadata_files"
 # path to EML file generated in this project repo
 path_artis_eml <- file.path(path_metadata_dir, "eml", glue("ARTIS_{cfg$model_version}_{cfg$prod_type}_EML.xml"))
 # to inspect
-#eml <- EML::read_eml(path_artis_eml)
+eml <- EML::read_eml(path_artis_eml)
 
 
 # Load my helper functions --------------------------------------------------
 
 source("./functions/ARTIS_EAL_helper_functions.R")
+
+
+# Validate EML -----------------------------------------------------------
+
+EML::eml_validate(path_artis_eml)
 
 # Point to DataOne ------------------------------------------------------
 

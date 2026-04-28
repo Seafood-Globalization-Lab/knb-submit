@@ -8,6 +8,8 @@
 # This script is intended to document the corrections made to the ARTIS v1.2 FAO 
 # dataset on the KNB staging node before publishing on 2026-04-24 by AM. 
 
+# Used NCEAS data team training doc as guide - https://nceas.github.io/datateam-training/reference/update-packages-with-datapack.html
+
 # Set KNB stagging node credentials --------------------------------------
 
 # 1) navigate to https://dev.nceas.ucsb.edu/ (may need to use a different browser)
@@ -30,7 +32,8 @@
     "uuid",
     "dataone",
     "EML",
-    "nceas/arcticdatautils"
+    "nceas/arcticdatautils",
+    "glue"
   ))
   library(dataone)
   library(datapack)
@@ -38,79 +41,49 @@
   library(dataone)
   library(arcticdatautils)
   library(EML)
+  library(glue)
 }
 
-# set location
-d1c <- D1Client("STAGING", "urn:node:mnTestKNB")
-# resource map uuid
-packageId <- "resource_map_urn:uuid:2fc365a1-38d2-442e-b848-6a4e9fbab6fa"
-# Download only the system metadata and EML metadata - NO data
-dp <- getDataPackage(
-  d1c,
-  identifier = packageId,
-  lazyLoad = TRUE, # will not download data
-  quiet = FALSE
-)
-    
-#get metadata id
-# This is erroring out - expecting XML but returning JSON. IDK why, just copied value in return text for EML object
-#metadataId <- selectMember(dp, name="sysmeta@formatId", value="https://eml.ecoinformatics.org/eml-2.2.0")
-metadataId <- "urn:uuid:303ff3c3-0f0e-444c-89b6-1d3f2be7bd3c"
+# read in from ./config.yml
+cfg <- config::get()
 
-# read the EML as R object to inspect
-doc <- read_eml(getObject(d1c@mn, metadataId))
+# Set ARTIS paths ----------------------------------------------------
 
-########### Test example 
-# does addMember() add identifier value? - No I don't think so. I think UUIDs are added by KNB once package is pushed up. 
-# 
-
-dpkg <- new("DataPackage")
-data <- charToRaw("1,2,3\n4,5,6")
-metadata <- charToRaw("EML or other metadata document text goes here\n")
-md <- new("DataObject", id="md1", dataobj=metadata, format="text/xml", user="smith", 
-  mnNodeId="urn:node:KNB")
-do <- new("DataObject", id="id1", dataobj=data, format="text/csv", user="smith", 
-  mnNodeId="urn:node:KNB")
-# Associate the metadata object with the science object. The 'mo' object will be added 
-# to the package  automatically, since it hasn't been added yet.
-dpkg <- addMember(dpkg, do, md)
-
+# local file path to dataset root directory 
+path_artis_files  <- Sys.getenv("ARTIS_DB_PATH")
+path_metadata_dir <- "./artis_metadata_files"
+# path to EML file generated in this project repo
+path_artis_eml <- file.path(path_metadata_dir, "eml", glue("ARTIS_{cfg$model_version}_{cfg$prod_type}_EML.xml"))
+# to inspect
+eml <- EML::read_eml(path_artis_eml)
 
 # Correct staged ARIS v1.2 KNB dataset -----------------------------------
 # 2026-04-24
 
 ## Get KNB EML metadata -----------------------------------
-# set location
-d1c <- D1Client("STAGING", "urn:node:mnTestKNB")
-# resource map uuid - Does not work - Error: ! XML content does not seem to be XML: '"q":"id:\"resource_map_urn:uuid:eff0aed4-7c15-4b8b-b53c-b94484e4e03c\""
-resourcemapId <- "resource_map_urn:uuid:eff0aed4-7c15-4b8b-b53c-b94484e4e03c"
+# stagging ARTIS 
+d1c_test <- D1Client("STAGING", "urn:node:mnTestKNB")
+# staged ARTIS v1.2
+resourcemapId <- "resource_map_urn:uuid:d8d462ee-0639-407b-892c-e8f8ac8accc7"
 
 # Download only the system metadata and EML metadata - NO data
 dp <- getDataPackage(
-  d1c,
+  d1c_test,
   identifier = resourcemapId,
   lazyLoad = TRUE, # will not download data
   quiet = FALSE
 )
-# the data package uuid also does not work, but gives us the EML identifier in the error message as "isDocumentedBy" value
-packageId <- "urn:uuid:eff0aed4-7c15-4b8b-b53c-b94484e4e03c"
-# Download only the system metadata and EML metadata - NO data
-dp <- getDataPackage(
-  d1c,
-  identifier = packageId,
-  lazyLoad = TRUE, # will not download data
-  quiet = FALSE
-)
-# Set uuid for metadata from error message
-metadataId <- "urn:uuid:eff0aed4-7c15-4b8b-b53c-b94484e4e03c"
-eml <- read_eml(getObject(d1c@mn, metadataId))
+metadataId <- selectMember(dp, name="sysmeta@formatId", value="https://eml.ecoinformatics.org/eml-2.2.0") # Get metadata PID
+doc <- read_eml(getObject(d1c_test@mn, metadataId))
 
-## Make edits to local EML R list object -----------------------------------
+## Replace metadata -----------------------------------
 
-# replace "my-dataset-tmp-id" text string identifier value
-#eml$dataset$id <- dataone::generateIdentifier(d1c@mn, scheme = "uuid")
+# updated 01 and 02 scripts and data dictionaries, regenerated EML. Validate
+eml_validate(eml)
 
-# write_eml(doc, eml_path)
+# replace EML in data package
+dp <- replaceMember(dp, metadataId, replacement = path_artis_eml)
 
-# dp <- replaceMember(dp, metadataId, replacement=eml_path)
-
+# Push updates to KNB record
+packageId <- dataone::uploadDataPackage(
+  d1c_test, dp, public=TRUE, quiet=FALSE)

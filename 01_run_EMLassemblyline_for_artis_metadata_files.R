@@ -109,27 +109,31 @@ testthat::test_file(path = "./tests/test_artis_dictionaries_valid.R")
 
 artis_defs_attr <- readr::read_tsv(
   file.path(path_metadata_dir, "artis_dictionary_tbl_attributes.txt"),
+  locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
-) |> sanitize_encoding()
+) 
 
 artis_defs_catvars <- readr::read_tsv(
   file.path(path_metadata_dir, "artis_dictionary_tbl_attributes_catvars.txt"),
+  locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
-) |> sanitize_encoding()
+)
 
 artis_defs_hs_v <- readr::read_tsv(
   file.path(path_metadata_dir, "artis_dictionary_hs_version.txt"),
+  locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
-) |> sanitize_encoding()
+) 
 
 artis_defs_tbl <- readr::read_tsv(
   file.path(path_metadata_dir, "artis_dictionary_tbl.txt"),
+  locale = readr::locale(encoding = "Windows-1252"),
   show_col_types = FALSE,
   na = "NA"
-) |> sanitize_encoding()
+)
 
 # Clean ARTIS datatable definitions --------------------------------------------
 
@@ -391,6 +395,9 @@ templates <- list(
   reference_trade_baci          = get_template(dataTable_csv, "reference_trade_baci$")
 )
 
+# Remove calculated max and min numericDomain values from templates before cloning into parquet dataTables
+templates <- lapply(templates, strip_bounds)
+
 # Generate a cloned <dataTable> element for each of the 148 parquet files.
 # Each file is matched to its ARTIS table type, then the corresponding
 # template <dataTable> is copied and three fields are overwritten:
@@ -424,7 +431,7 @@ eml$dataset$literatureCited <- list(citation = citation_list)
 
 ## Add data sensitivity -----------------------------------------------
 # Assign data sensitivity category - defined ontology: https://ontologies.dataone.org/SENSO.html#0.1.0
-eml$dataset$id <- "my-dataset-tmp-id" 
+eml$dataset$id <- generate_knb_style_uuid()
 
 eml$dataset$annotation <- list(
   propertyURI = list(

@@ -9,11 +9,11 @@
 # editor, but Excel silently inserts non-UTF-8 characters (e.g. non-breaking
 # spaces \xca, en-dashes \xd0) on save. This function coerces all character
 # columns back to valid UTF-8 after reading.
-sanitize_encoding <- function(df) {
-  df |> dplyr::mutate(
-    dplyr::across(where(is.character), \(x) iconv(x, from = "Windows-1252", to = "UTF-8"))
-  )
-}
+# sanitize_encoding <- function(df) {
+#   df |> dplyr::mutate(
+#     dplyr::across(where(is.character), \(x) iconv(x, from = "Windows-1252", to = "UTF-8"))
+#   )
+# }
 
 # Arrow schema helpers ---------------------------------------------------
 
@@ -218,4 +218,20 @@ get_format <- function(file_path) {
 generate_knb_style_uuid <- function(){
   an_id <- paste0("urn:uuid:", uuid::UUIDgenerate())
   return(an_id)
+}
+
+# Helper to strip min/max bounds from all ratio attributes in a single dataTable template
+strip_bounds <- function(datatable_template) {
+  attrs <- datatable_template$attributeList$attribute
+  
+  attrs <- lapply(attrs, \(attr) {
+    bounds <- attr$measurementScale$ratio$numericDomain$bounds
+    if (!is.null(bounds)) {
+      attr$measurementScale$ratio$numericDomain$bounds <- NULL
+    }
+    attr
+  })
+  
+  datatable_template$attributeList$attribute <- attrs
+  datatable_template
 }
