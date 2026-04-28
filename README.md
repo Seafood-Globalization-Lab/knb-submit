@@ -1,42 +1,106 @@
 # Publish ARTIS Database on KNB Data Repository
 
-FIXIT: 
-- Quick run instructions - config, run scripts
-- Quick updates - add citations, add personel, change defs
-- How to add a new table - add entry to artis_dictionary & chunk of 01 code
-- Move artis_dictionaries to new folder
-
-### Purpose of this repo
+### Purpose
 
 - Reproducible and versioned creation of EML metadata
-- Reusable automated authoring of EML metadata
-- Version controled data dictionaries and citations
+- Version controled data dictionaries
 - Reusable automated upload of database and metadata to KNB
 
-ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and distribute stable releases of the model codebase and resulting database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing to the larger open-science and reproducible science community. ARTIS uses KNB as an access point for anyone to download the ARTIS model codebase and ARTIS database.
+ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinformatics.org/) data repository to archive and publically distribute stable releases of the model codebase and database. Archiving, documenting and openly distributing ARTIS is a critical component in contributing to the larger open-science and reproducible science community. 
 
-### Workflow Outline for Publishing ARTIS dataset on KNB
+KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories and KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS workflow uses the [`EMLassemblyline`](https://github.com/EDIorg/EMLassemblyline) R package (EAL) combined with custom post-processing scripts to produce valid EML for the ARTIS parquet file collection.
 
-- Assume ARTIS database is validated and in cleaned architecture for distribution (done in )
-- Update ARTIS data disctionaries and long-lived documentation (if needed)
-- Generate EML metadata documentation specific to the ARTIS dataset release version 
-- Point to KNB stagging member node
-- Create data package with EML and full ARTIS database
-- Push to stagging 
-
-### Additional KNB Info
-
-KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories and KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS pipeline uses [`EMLassemblyline`](https://github.com/EDIorg/emlAssemblyLine)
-
+### References and Resources
 - [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/) - For creating a data package to submit to KNB and editing of existing EML documentation. 
 - [Instructions for the EML assembly line](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=197025) - Practical instructions for running the `EMLassemblyline` (EAL) workflow to author EML. 
 - [DataOne R package documentation](https://dataoneorg.r-universe.dev/dataone) Check out the `Vignettes` particularly:
   - [DataONE Federation](https://dataoneorg.r-universe.dev/articles/dataone/v02-dataone-federation.html) for KNB Authentication Tokens and;
   - [Uploading Datasets to DataONE](https://dataoneorg.r-universe.dev/articles/dataone/v06-update-package.html) for an outline of the data package upload workflow. 
 
-# Creating EML Metadata for ARTIS Dataset Releases
+## Installation
 
-This guide walks through generating an EML (Ecological Metadata Language) metadata document for a new ARTIS dataset release on the [KNB data repository](https://knb.ecoinformatics.org/). The workflow uses the [`EMLassemblyline`](https://github.com/EDIorg/EMLassemblyline) R package (EAL) combined with custom post-processing scripts to produce valid EML for the ARTIS parquet file collection.
+In your local IDE terminal: 
+
+```
+git clone https://github.com/Seafood-Globalization-Lab/knb-submit.git
+```
+
+## Quick Start Instructions
+
+### 1) Prerequisite Assumptions
+
+- ARTIS database is validated 
+- Database is in cleaned final architecture on the Seafood Globalization Lab's UW NAS server
+
+### Set ARTIS file path in `.Renviron`
+
+The workflow reads the ARTIS parquet dataset from a local path set in your `.Renviron` file. Set this once per machine:
+
+```r
+usethis::edit_r_environ(scope = "project")
+```
+
+Add this line to the `.Renviron` file that opens, replacing the path with your local ARTIS dataset location:
+
+```bash
+ARTIS_DB_PATH=/path/to/your/local/ARTIS/KNB/outputs
+```
+
+Save and restart R.
+
+### 2) Update `config.yml` 
+
+This file contains all the model configuration parameters settings. Update the values for a new version of ARTIS. These values are used dynamically in the workflow scripts. 
+
+### 3) Update `artis_dictionaries/` files (if needed)
+
+These files need updating when any of the following occurs between ARTIS versions: 
+
+- A new HS version is added - `artis_dictionary_hs_version.txt`
+- A new column is added - `artis_dictionary_tbl_attributes.txt`
+- A new table is added - `artis_dictionary_tbl.txt` (Also requires code changes in `01_*.R`)
+- A categorical variable is new or expanded - `artis_dictionary_tbl_attributes_catvars.txt`
+- Add a citation to the dataset - `artis_citations.bib`
+
+### 4) Update Persistent EMLassemblyline templates
+
+The `artis_metadata_files/` directory is where the R package `EMLassemblyline` operates to write EML. Update files if needed: 
+
+- `abstract.md`
+- `additional_info.md`
+- `keywords.txt`
+- `methods.md`
+- `personnel.txt`
+
+> [!WARNING] 
+> **Do not use special characters, symbols, or formatting.** EML only accepts Unicode plain text: UTF-8. URLs are acceptable. 
+
+### 5) Run `1_run_EMLassemblyline_for_artis_metadata_files.R`
+
+likely able to run straight through
+
+### 6) Run `02_publish_ARTIS_data_on_KNB.R`
+
+Requires setting KNB staging node credientials:
+
+1) Navigate to [KNB test/staging site](https://dev.nceas.ucsb.edu/) (may need to use a different browser)
+2) Login with your ORCiD
+3) Navigate to your profile --> settings --> authentication Token --> "Token for DataONE R" 
+4) Copy the string to your clipboad. Paste and call in your console to set temporary access token
+
+> [!Tip]
+> if having problems, click small red link on login popup window and adjust browser settings)
+Check out [dataone r package vignette](https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html) for more detailed instructions. Note the vignette instructions are for the productions site, we need a stagging site token
+
+### Inspect on KNB test site
+
+### Fixing EML
+
+### Publish with DOI
+
+## Details on using `EMLassemblyline` Metadata
+
+This section documents details of using this repo to author EML and publish on KNB. 
 
 ## Relevant File Architecture
 
@@ -72,19 +136,7 @@ knb-submit/
 
 ### Environment setup
 
-The workflow reads the ARTIS parquet dataset from a local path set in your `.Renviron` file. Set this once per machine:
-
-```r
-usethis::edit_r_environ(scope = "project")
-```
-
-Add this line to the `.Renviron` file that opens, replacing the path with your local ARTIS dataset location:
-
-```bash
-ARTIS_DB_PATH=/path/to/your/local/ARTIS/KNB/outputs
-```
-
-Save and restart R. Verify it worked:
+ Verify it worked:
 
 ```r
 Sys.getenv("ARTIS_DB_PATH")
@@ -127,8 +179,7 @@ EMLassemblyline::make_eml(
 
 Open `metadata-files/metadata_templates/abstract.md` in Positron or Rstudio (not Excel) and update the temporal coverage, species counts, or any other release-specific language.
 
-> [!WARNING] 
-> **Do not use special characters, symbols, or formatting.** EML only accepts Unicode plain text: UTF-8. URLs are acceptable. The `run_EMLassemblyline_for_metadata-files.R` script trys to reads in `.txt` safely because excel introduces all kinds of crazy things without the user knowing. LLM generated text may also use non-UTF-8 characters that will introduce EML validation problems. 
+
 
 ### Update `personnel.txt`
 
@@ -152,7 +203,7 @@ The four data dictionary files in `metadata-files/` are designed to persist acro
 
 
 > [!TIP]
-> Open dictionary files in a spreadsheet editor if edits are needed. The `sanitize_encoding()` function in the run script automatically cleans up any encoding artifacts introduced by Excel on save — this is expected and handled.
+> Open dictionary files in a spreadsheet editor if edits are needed. The code in `01_run_EMLassemblyline_for_artis_metadata_files.R` reads in the text files in a way to remove invalid Excel added characters. 
 
 Valid values for key columns in `artis_dictionary_tbl_attributes.txt`:
 
