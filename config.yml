@@ -31,7 +31,9 @@ default:
   artis_eml_additionalInfo: "The consumption and trade tables are partitioned into
     individual parquet files by HS version and year. All consumption files share an identical
     schema, as do all trade files. The complete consumption and trade datasets are obtained by
-    combining all files of each type."
+    combining all files of each type. When analyzing data over time, users should select one 
+    HS version per year. If combining multiple HS versions into a single time series, users 
+    should carefully consider potential discontinuities created by changes in HS codes across versions."
 
   ### DataONE publishing target / parameters
   # Use "STAGING" + "urn:node:mnTestKNB" for pre-release review
