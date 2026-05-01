@@ -19,7 +19,7 @@ default:
   # delete generated templates
   clean_up_templates: true
   # convert artis output parquet files to csv files to run through EAL workflow
-  convert_parquets: false
+  convert_parquets: true
 
   ### EML values
   maintenance_description: "This dataset is intended to be updated annually when new FAO/BACI trade year data is made available."
@@ -39,5 +39,5 @@ default:
   # Use "STAGING" + "urn:node:mnTestKNB" for pre-release review
   # Use "PROD" + "urn:node:KNB" for final publication
   data_repo: "KNB"
-  dataone_coordinating_node: "STAGING"
-  dataone_member_node: "urn:node:mnTestKNB"
+  dataone_coordinating_node: "PROD"
+  dataone_member_node: "urn:node:KNB"

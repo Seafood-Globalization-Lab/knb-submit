@@ -25,7 +25,7 @@ In your local IDE terminal:
 git clone https://github.com/Seafood-Globalization-Lab/knb-submit.git
 ```
 
-## Quick Start Instructions
+## Workflow Instructions
 
 ### 1) Prerequisite Assumptions
 

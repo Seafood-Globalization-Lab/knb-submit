@@ -75,7 +75,7 @@ cn <- dataone::CNode(cfg$dataone_coordinating_node)
 # Get reference to node based on its identifier
 mn <- dataone::getMNode(cn,cfg$dataone_member_node)
 # DataONE client class used to download, update, and search for data in the DataONE network
-d1c_test <- dataone::D1Client(cn,mn)
+d1c <- dataone::D1Client(cn,mn)
 
 # Build data package -----------------------------------------
 
@@ -199,4 +199,4 @@ myAccessRules <- data.frame(
 ## Need to have authentication token from http://dev.nceas.ucsb.edu/
 
 packageId <- dataone::uploadDataPackage(
-  d1c_test, dp, public=TRUE, accessRules=myAccessRules, quiet=FALSE)
+  d1c, dp, public=TRUE, accessRules=myAccessRules, quiet=FALSE)

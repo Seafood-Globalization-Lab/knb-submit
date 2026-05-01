@@ -63,8 +63,8 @@ eml <- EML::read_eml(path_artis_eml)
 ## Get KNB EML metadata -----------------------------------
 # stagging ARTIS 
 d1c_test <- D1Client("STAGING", "urn:node:mnTestKNB")
-# staged ARTIS v1.2
-resourcemapId <- "resource_map_urn:uuid:d8d462ee-0639-407b-892c-e8f8ac8accc7"
+# staged ARTIS v1.2 (most recent version of the resource map ID)
+resourcemapId <- "resource_map_urn:uuid:b0d0c7fc-c8e0-448b-ae44-856a6b1f4d3c"
 
 # Download only the system metadata and EML metadata - NO data
 dp <- getDataPackage(
