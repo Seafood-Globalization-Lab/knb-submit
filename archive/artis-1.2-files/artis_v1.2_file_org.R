@@ -225,6 +225,7 @@ code_max <- fread(
   mutate(hs_version = sub("^HS", "", hs_version)) %>% 
   select(
     hs_version,
+    hs6,
     sciname,
     sciname_hs6_modified = sciname_hs_modified,
     match_category,
@@ -233,7 +234,8 @@ code_max <- fread(
     hs6_clade = hs_clade,
     hs6_taxa_level = code_taxa_level,
     prod_taxa_level,
-    hs6_taxa_level_numeric = code_taxa_level_numeric  
+    hs6_taxa_level_numeric = code_taxa_level_numeric,
+    prod_taxa_level_numeric  
   ) %>% 
   arrange(hs_version, sciname)
 
@@ -252,8 +254,8 @@ prod <- fread(
     year,
     prod_country_iso3c = iso3c,
     sciname,
-    method,
     habitat,
+    method,
     live_weight_t
   ) %>% 
   arrange(year, prod_country_iso3c)
