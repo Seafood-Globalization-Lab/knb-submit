@@ -99,7 +99,12 @@ if (cfg$clean_up_templates == TRUE) {
 
 # Run test script that checks if long-lived ARTIS data dictionaries contain expected values and schema
 # to populate EAL tempates.
-testthat::test_file(path = "./tests/test_artis_dictionaries_valid.R")
+test_results <- testthat::test_file(path = "./tests/test_artis_dictionaries_valid.R") %>% 
+  as.data.frame()
+
+if (any(test_results$failed > 0) || any(test_results$error)) {
+  stop("Dictionary validation tests failed. Fix issues before proceeding.")
+}
 
 # Read in long-lived ARTIS data dictionaries (attribute definitions).
 # Most values will not need updating between release versions unless new columns
