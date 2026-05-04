@@ -10,6 +10,10 @@ ARTIS uses the The Knowledge Network for Biocomplexity [KNB](https://knb.ecoinfo
 
 KNB is guided by [FAIR](https://doi.org/10.1038/sdata.2016.18) (findable, accessible, interoperable, resuble) principles of data sharing and preservation and issues unique DOIs (digital object identifier) to each data package and every version of the package for long term access, transparency, and informative citations. KNB is a member of [DataONE](https://www.dataone.org/) (Data Observation Network for Earth); a network of data repositories and KNB uses [EML](https://eml.ecoinformatics.org/) (Ecological Metadata Language) to document objects within a data packages and can be authored via the website GUI (graphical user interface) or through a series of R packages; the ARTIS workflow uses the [`EMLassemblyline`](https://github.com/EDIorg/EMLassemblyline) R package (EAL) combined with custom post-processing scripts to produce valid EML for the ARTIS parquet file collection.
 
+### Who This Repo is For
+
+PI Jessica Gephart and the Data scientist responsible for maintaining the ARTIS model and database.
+
 ### References and Resources
 - [KNB and ADC Data Team Training](https://nceas.github.io/datateam-training/training/) - For creating a data package to submit to KNB and editing of existing EML documentation. 
 - [Instructions for the EML assembly line](https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=197025) - Practical instructions for running the `EMLassemblyline` (EAL) workflow to author EML. 
@@ -113,6 +117,13 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 - Wait for entire dataset to upload AND index (backend system to recognize the new datapackage)
 - Inspect GUI representation of the EML on the website
 - Click button "Publish with DOI" at the middle right of the dataset webpage. 
+
+FIXIT: Add note about KNB staging vs production environemnts 
+
+---
+
+> [!WARNING]
+> The content below needs further editing for clarity (2026-05-04)
 
 ## Details on using `EMLassemblyline` Metadata
 
@@ -254,16 +265,3 @@ The checks confirm:
 Fix any failures in the source dictionary files and re-run the main script before proceeding to publish.
 
 > **Note:** KNB will assign a new package identifier in the production environment — you cannot reuse the staging identifier. Re-run the script one final time with the production identifier before the final upload.
-
-## AM KNB Datapackage Notes for README
-
-- Will create new dataset version on KNB each release. Will NOT use versioned releases to update an existing dataset. 
-- [Instructions to get access token](https://nceas.github.io/datateam-training/training/creating-a-data-package.html#upload-a-package) 
-  - Log into KNB with ORCiD
-  - my profile
-  - settings
-  - Authentication 
-  - Token for DataONE R
-  - Copy
-  - run in console
-- [CRAN dataone pkg vignettes](https://cran.r-project.org/web/packages/dataone/vignettes/v05-upload-data.html)
