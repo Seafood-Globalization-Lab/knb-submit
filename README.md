@@ -141,6 +141,8 @@ The `artis_metadata_files/` directory is where the R package `EMLassemblyline` o
 > if having problems, click small red link on login popup window and adjust browser settings)
 Check out [dataone r package vignette](https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html) for more detailed instructions. Note the vignette instructions are for the productions site, we need a stagging site token
 
+![Screenshot of a KNB profile webpage where the authentication token can be retrieved, highlighted by a pink circle.](./images/screenshot_token.png)
+
 ### 8) Push Datapackage to KNB 
 
 - Run `02_publish_ARTIS_data_on_KNB.R`
@@ -166,7 +168,7 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 - Regenerate EML file locally by rerunning
 `01_run_EMLassemblyline_for_artis_metadata_files.R`
 - In `03_inspect_KNB_EML.R` - Replace `D1Client` arguement values to point to the dataset on the appropriate KNB environment
-- In `03_inspect_KNB_EML.R` - Replace `resourcemapId` value with the latest identifier on the corresponding KNB site/node website record of the dataset. 
+- In `03_inspect_KNB_EML.R` - Replace `resourcemapId` value with the latest identifier on the corresponding KNB site/node website record of the dataset. (Highlighted with orange in image below)
 - Step through `03_inspect_KNB_EML.R` to pull down datapackage (without data) and replace the EML object and push back up to KNB. 
 
 #### Edit datapackage structure or Sysmetadata
@@ -180,7 +182,9 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 
 - Wait for entire datapackage to upload to the KNB production site/node AND index the datapackage (backend system to recognize the new datapackage). This may take a bit. 
 - Inspect GUI representation of the EML on the website
-- Click button "Publish with DOI" at the middle right of the dataset webpage. 
+- Click button "Publish with DOI" at the middle right of the dataset webpage (Highlighted with pink in image below).
+
+![Screenshot of a KNB dataset webpage where an author can click to publish the dataset with a DOI (highlighted with pink), and where to obtain the dataset resource map identifier to use in `03_inspect_KNB_EML.R`](./images/screenshot_DOI_resourcemap.png)
 
 ---
 
