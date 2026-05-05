@@ -188,9 +188,6 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 
 ---
 
-> [!WARNING]
-> The content below needs further editing for clarity (2026-05-04)
-
 ## Details on using `EMLassemblyline`
 
 This section documents details of using this repo to author EML and publish on KNB. 
