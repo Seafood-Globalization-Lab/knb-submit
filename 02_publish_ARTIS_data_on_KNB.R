@@ -63,7 +63,6 @@ eml <- EML::read_eml(path_artis_eml)
 
 source("./functions/ARTIS_EAL_helper_functions.R")
 
-
 # Validate EML -----------------------------------------------------------
 
 EML::eml_validate(path_artis_eml)

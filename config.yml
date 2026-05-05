@@ -36,8 +36,8 @@ default:
     should carefully consider potential discontinuities created by changes in HS codes across versions."
 
   ### DataONE publishing target / parameters
-  # Use "STAGING" + "urn:node:mnTestKNB" for pre-release review
-  # Use "PROD" + "urn:node:KNB" for final publication
+  # Use "STAGING" + "urn:node:mnTestKNB" for workflow code testing or pre-release review
+  # Use "PROD" + "urn:node:KNB" for final publication (can still update before publishing with DOI)
   data_repo: "KNB"
   dataone_coordinating_node: "PROD"
   dataone_member_node: "urn:node:KNB"
