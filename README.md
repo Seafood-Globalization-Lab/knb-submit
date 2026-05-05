@@ -119,7 +119,7 @@ The `artis_metadata_files/` directory is where the R package `EMLassemblyline` o
 > Before running `02_publish_ARTIS_data_on_KNB.R` it is essential to understand what KNB environment you want to push the data package (`dp` - data tables, EML metadata, and system metadata) to. You have two options: 
 >
 > - `"PROD"` - The KNB production site/node that is the offical public facing site for proper publishing. 
-- `"STAGING"` - The KNB test site/node that is an exact mirror of the production site, but intended for testing code and workflows.
+> - `"STAGING"` - The KNB test site/node that is an exact mirror of the production site, but intended for testing code and workflows.
 
 > [!TIP]
 > You can NOT transfer a datapackage from the staging site to the testing site.
@@ -134,11 +134,11 @@ The `artis_metadata_files/` directory is where the R package `EMLassemblyline` o
   1) Navigate to [KNB test/staging site](https://dev.nceas.ucsb.edu/) OR [KNB production site](https://knb.ecoinformatics.org/) (may need to use a different browser)
   2) Login with your ORCiD to access your profile.
      - serves as your ID. Create one here [ORCiD](https://orcid.org/)
-  3) Navigate to your profile --> settings --> authentication Token --> "Token for DataONE R" 
+  3) Navigate to your profile --> settings --> authentication Token --> "Token for DataONE R" (_Highlighted in pink in screenshot below_)
   4) Copy the string to your clipboad. Paste and call in your console to set temporary access token
 
 > [!Tip]
-> if having problems, click small red link on login popup window and adjust browser settings)
+> If you having problems, click small red link on login popup window and adjust browser settings)
 Check out [dataone r package vignette](https://cran.r-project.org/web/packages/dataone/vignettes/v02-dataone-federation.html) for more detailed instructions. Note the vignette instructions are for the productions site, we need a stagging site token
 
 ![Screenshot of a KNB profile webpage where the authentication token can be retrieved, highlighted by a pink circle.](./images/screenshot_token.png)
@@ -168,7 +168,7 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 - Regenerate EML file locally by rerunning
 `01_run_EMLassemblyline_for_artis_metadata_files.R`
 - In `03_inspect_KNB_EML.R` - Replace `D1Client` arguement values to point to the dataset on the appropriate KNB environment
-- In `03_inspect_KNB_EML.R` - Replace `resourcemapId` value with the latest identifier on the corresponding KNB site/node website record of the dataset. (Highlighted with orange in image below)
+- In `03_inspect_KNB_EML.R` - Replace `resourcemapId` value with the latest identifier on the corresponding KNB site/node website record of the dataset. (_Highlighted with orange in screenshot below_)
 - Step through `03_inspect_KNB_EML.R` to pull down datapackage (without data) and replace the EML object and push back up to KNB. 
 
 #### Edit datapackage structure or Sysmetadata
@@ -182,7 +182,7 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 
 - Wait for entire datapackage to upload to the KNB production site/node AND index the datapackage (backend system to recognize the new datapackage). This may take a bit. 
 - Inspect GUI representation of the EML on the website
-- Click button "Publish with DOI" at the middle right of the dataset webpage (Highlighted with pink in image below).
+- Click button "Publish with DOI" at the middle right of the dataset webpage (_Highlighted with pink in screenshot below_).
 
 ![Screenshot of a KNB dataset webpage where an author can click to publish the dataset with a DOI (highlighted with pink), and where to obtain the dataset resource map identifier to use in `03_inspect_KNB_EML.R`](./images/screenshot_DOI_resourcemap.png)
 
