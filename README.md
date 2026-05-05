@@ -186,6 +186,18 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 
 ![Screenshot of a KNB dataset webpage where an author can click to publish the dataset with a DOI (highlighted with pink), and where to obtain the dataset resource map identifier to use in `03_inspect_KNB_EML.R`](./images/screenshot_DOI_resourcemap.png)
 
+### 12) Tag repo version
+
+- Create a git tag for the repo used to publish the ARTIS database on KNB. This creates a "bookmark" in the code history and documents our reproducable workflow. Example tag name: `KNB-ARTIS-release/v1.2_FAO`
+
+```zsh
+git tag KNB-ARTIS-release/v<model_version>_<prod_version>
+```
+
+```zsh
+git push origin KNB-ARTIS-release/v1.2_FAO
+```
+
 ---
 
 ## Details on using `EMLassemblyline`
