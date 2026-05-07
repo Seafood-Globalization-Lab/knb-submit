@@ -160,7 +160,7 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 > [!Tip] 
 > Will need to get separate authentication tolkens for each site. 
 
-### 10) Fixing your datapackage on KNB
+### 10) Fixing your datapackage on KNB (optional)
 
 #### Edit EML metadata
 
