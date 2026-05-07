@@ -191,7 +191,7 @@ Check out [dataone r package vignette](https://cran.r-project.org/web/packages/d
 - Create a git tag for the repo used to publish the ARTIS database on KNB. This creates a "bookmark" in the code history and documents our reproducable workflow. Example tag name: `KNB-ARTIS-release/v1.2_FAO`
 
 ```zsh
-git tag KNB-ARTIS-release/v<model_version>_<prod_version>
+git tag KNB-ARTIS-release/v<model_version>_<prod_type>
 ```
 
 ```zsh
